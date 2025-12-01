@@ -16,10 +16,7 @@ void initFingerprint()
     else
     {
         Serial.println("Did not find fingerprint sensor :(");
-        while (1)
-        {
-            delay(1);
-        }
+        return;
     }
 
     Serial.println(F("Reading sensor parameters"));
