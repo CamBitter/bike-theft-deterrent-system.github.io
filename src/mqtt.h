@@ -12,10 +12,9 @@ extern const char* aio_url;
 extern const uint16_t aio_port;
 extern const char* gps_channel;
 
-void initMqtt();
-void MqttKeepAlive();
+void startMqttWifiTask(void);
+void MqttWifiKeepAlive(void* parameters);
 void publishGpsData(GPS_Data data);
-void checkConnections();
-bool isConnected();
+bool isConnected(void);
 
 #endif

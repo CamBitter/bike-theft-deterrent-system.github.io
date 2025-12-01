@@ -20,21 +20,12 @@ RTC_DATA_ATTR unsigned long wakeStart = 0;
 RTC_DATA_ATTR bool isArmed = false;
 GPS_Data initialGPSData = {};
 
-void checkConnections(void);
-
-unsigned long lastWifiAttempt = 0;
-const unsigned long WIFI_RECONNECT_INTERVAL = 2000;  // ms
-
-unsigned long lastMqttAttempt = 0;
-const unsigned long MQTT_RECONNECT_INTERVAL = 2000;  // ms
-
 /* 
  * WAKE INITIAL
 */
 void setup() {
 
   Serial.begin(115200); 
-  while (!Serial); 
 
   delay(500);
 
@@ -51,7 +42,7 @@ void setup() {
   initGPS();
 
   /* INIT MQTT */
-  initMqtt();
+  startMqttWifiTask();
 
   /* INIT OLED */
 
@@ -97,9 +88,6 @@ void loop() {
   if (digitalRead(FINGERSENSOR_INTERRUPT_PIN) == HIGH) {
 
   }
-
-  // HANDLE WIFI & MQTT
-  checkConnections();
 
   // HANDLE GPS DATA
   GPS_Data gpsData = readGPS();
