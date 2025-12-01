@@ -3,6 +3,7 @@
 
 // Time to stay awake when woken by fingerprint sensor or accelerometer (in milliseconds)
 #define AWAKE_TIME_MS 30000UL 
+#define WIFI_TIMEOUT_MS 20000
 
 // Interrupt pins
 #define FINGERSENSOR_INTERRUPT_PIN GPIO_NUM_32
