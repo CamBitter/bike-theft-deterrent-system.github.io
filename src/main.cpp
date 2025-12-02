@@ -19,33 +19,34 @@
 // RTC_DATA persists through Deep Sleep
 RTC_DATA_ATTR unsigned long wakeStart = 0;
 RTC_DATA_ATTR bool isArmed = false;
-GPS_Data initialGPSData = {};
 
-/* 
+/*
  * WAKE INITIAL
  */
 void setup()
 {
 
-  Serial.begin(115200); 
+  Serial.begin(115200);
 
   delay(500);
 
   /* INIT ACCELEROMETER */
   if (!lis.begin(LIS3DH_ADDR))
   {
-    Serial.println("Could not start LIS3DH");
+    Serial.println("[LIS3DH]: Could not start.");
   }
-  Serial.println("Connected to LIS3DH");
+  Serial.println("[LIS3DH]: Connected.");
 
   /* INIT ACCELEROMETER */
   init_ACC();
 
   /* INIT GPS */
   initGPS();
+  startGpsTask();
 
   /* INIT FINGERPRINT */
   initFingerprint();
+  startFingerprintTask();
 
   /* INIT MQTT */
   startMqttWifiTask();
@@ -55,28 +56,42 @@ void setup()
   /* STORE INTIAL GPS READING */
 
   /* WAKEUP FROM INTERRUPT */
-  if (esp_sleep_get_wakeup_cause() == ESP_SLEEP_WAKEUP_EXT1)
+  esp_sleep_wakeup_cause_t wakeupCause = esp_sleep_get_wakeup_cause();
+
+  switch (wakeupCause)
   {
-    uint64_t wakeStatus = esp_sleep_get_ext1_wakeup_status();
+  case ESP_SLEEP_WAKEUP_EXT0:
+    Serial.println("[Wakeup]: EXT0 (Fingerprint)");
+    fingerLightWakeup();
+    break;
 
-    if (wakeStatus & (1ULL << ACCELEROMETER_INTERRUPT_PIN))
+  case ESP_SLEEP_WAKEUP_EXT1:
+  {
+    uint64_t status = esp_sleep_get_ext1_wakeup_status();
+    if (status & (1ULL << ACCELEROMETER_INTERRUPT_PIN))
     {
-      Serial.println("Accelerometer triggered wake-up");
+      Serial.println("[Wakeup]: EXT1 (Accelerometer)");
+      clearAccelerometerInterrupt();
     }
-    if (wakeStatus & (1ULL << FINGERSENSOR_INTERRUPT_PIN))
-    {
-      Serial.println("Fingerprint triggered wake-up");
-    }
-
-    wakeStart = millis();
+    break;
   }
 
-  // Configure wakeup interrupts for fingerprint sensor and accelerometer
+  default:
+    Serial.println("[Wakeup]: Not EXT0/EXT1/Timer");
+    break;
+  }
+
+  // Configure fingerprint sensor on EXT0 (active-low)
   pinMode(FINGERSENSOR_INTERRUPT_PIN, INPUT);
+  rtc_gpio_pullup_en(FINGERSENSOR_INTERRUPT_PIN);              // Enable internal pull-up
+  esp_sleep_enable_ext0_wakeup(FINGERSENSOR_INTERRUPT_PIN, 0); // 0 = wake on LOW
+
+  // Accelerometer stays on EXT1 (active-high)
   pinMode(ACCELEROMETER_INTERRUPT_PIN, INPUT);
-  esp_sleep_enable_ext1_wakeup(WAKEUP_PINS_BITMASK, ESP_EXT1_WAKEUP_ANY_HIGH);
-  rtc_gpio_pulldown_en(FINGERSENSOR_INTERRUPT_PIN);
   rtc_gpio_pulldown_en(ACCELEROMETER_INTERRUPT_PIN);
+  esp_sleep_enable_ext1_wakeup(1ULL << ACCELEROMETER_INTERRUPT_PIN, ESP_EXT1_WAKEUP_ANY_HIGH);
+
+  wakeStart = millis();
 }
 
 /*
@@ -88,47 +103,16 @@ void loop()
   // HANDLE ACCELEROMETER INTERRUPT
   if (digitalRead(ACCELEROMETER_INTERRUPT_PIN) == HIGH)
   {
-    Serial.println("Restarting interrupt count down.");
+    Serial.println("[LIS3DH]: Interrupt reset.");
     wakeStart = millis();
     clearAccelerometerInterrupt();
-  }
-
-  // HANDLE FINGER SENSOR INTERRUPT
-  if (digitalRead(FINGERSENSOR_INTERRUPT_PIN) == HIGH) // might need to change what pins im using/coordinate on this
-  {
-    Serial.println("Fingerprint sensor interrupt detected");
-    wakeStart = millis();
-
-    if (checkFingerprint(isArmed))
-    {
-      // show on OLED that it is armed
-    }
-  }
-
-  // HANDLE GPS DATA
-  GPS_Data gpsData = readGPS();
-  if (gpsData.fixQuality > 0)
-  {
-    // STORE INITIAL GPS STATE
-    if (!initialGPSData.fix)
-    {
-      initialGPSData = gpsData;
-      Serial.print("Stored initial GPS data, fix quality: ");
-      Serial.print(gpsData.fixQuality);
-      Serial.print(", # sats: ");
-      Serial.println(gpsData.satellites);
-
-      if (isConnected())
-      {
-        publishGpsData(gpsData);
-      }
-    }
   }
 
   // IF NO ACTIVITY, GO TO SLEEP
   if ((millis() - wakeStart) > AWAKE_TIME_MS)
   {
-    Serial.println("Timer expired, going back to deep sleep...");
+    Serial.println("[Main]: Starting deep sleep.");
+    fingerLightSleep();
     esp_deep_sleep_start();
   }
 

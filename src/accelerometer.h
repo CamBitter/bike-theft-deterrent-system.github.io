@@ -2,7 +2,7 @@
 #define ACCELEROMETER_H
 
 // Threshhold to trigger an interrupt on INT output, desired_threshold = milli-g's * 16
-#define ACCELEROMETER_INTERRUPT_THRESHOLD 0x10 
+#define ACCELEROMETER_INTERRUPT_THRESHOLD 0x10
 
 // I2C address
 #define LIS3DH_ADDR 0x18

@@ -9,6 +9,7 @@
 
 extern bool enroll;
 extern Adafruit_Fingerprint finger;
+extern bool currentlyHandlingFinger;
 
 void initFingerprint();
 bool checkFingerprint(bool &isArmed);
@@ -21,5 +22,8 @@ int getNextFreeID();
 bool deleteFingerprint(uint8_t id);
 bool deleteAllFingerprints();
 void enrollPressed();
+void fingerLightWakeup();
+void fingerLightSleep();
+void startFingerprintTask();
 
 #endif
