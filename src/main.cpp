@@ -33,9 +33,9 @@ void setup()
   /* INIT ACCELEROMETER */
   if (!lis.begin(LIS3DH_ADDR))
   {
-    Serial.println("Could not start LIS3DH");
+    Serial.println("[LIS3DH]: Could not start.");
   }
-  Serial.println("Connected to LIS3DH");
+  Serial.println("[LIS3DH]: Connected.");
 
   /* INIT ACCELEROMETER */
   init_ACC();
@@ -46,6 +46,7 @@ void setup()
 
   /* INIT FINGERPRINT */
   initFingerprint();
+  startFingerprintTask();
 
   /* INIT MQTT */
   startMqttWifiTask();
@@ -60,7 +61,7 @@ void setup()
   switch (wakeupCause)
   {
   case ESP_SLEEP_WAKEUP_EXT0:
-    Serial.println("Wakeup from EXT0 (Fingerprint)");
+    Serial.println("[Wakeup]: EXT0 (Fingerprint)");
     fingerLightWakeup();
     break;
 
@@ -69,14 +70,14 @@ void setup()
     uint64_t status = esp_sleep_get_ext1_wakeup_status();
     if (status & (1ULL << ACCELEROMETER_INTERRUPT_PIN))
     {
-      Serial.println("Wakeup from EXT1 (Accelerometer)");
+      Serial.println("[Wakeup]: EXT1 (Accelerometer)");
       clearAccelerometerInterrupt();
     }
     break;
   }
 
   default:
-    Serial.println("Wakeup not caused by EXT0/EXT1/Timer");
+    Serial.println("[Wakeup]: Not EXT0/EXT1/Timer");
     break;
   }
 
@@ -102,29 +103,15 @@ void loop()
   // HANDLE ACCELEROMETER INTERRUPT
   if (digitalRead(ACCELEROMETER_INTERRUPT_PIN) == HIGH)
   {
-    Serial.println("Restarting interrupt count down.");
+    Serial.println("[LIS3DH]: Interrupt reset.");
     wakeStart = millis();
     clearAccelerometerInterrupt();
-  }
-
-  // HANDLE FINGER SENSOR INTERRUPT
-  if (digitalRead(FINGERSENSOR_INTERRUPT_PIN) == LOW && !currentlyHandlingFinger) // ACTIVE LOW
-  {
-    currentlyHandlingFinger = true;
-    Serial.println("Fingerprint sensor interrupt detected");
-    wakeStart = millis();
-
-    if (checkFingerprint(isArmed))
-    {
-      // show on OLED that it is armed
-    }
-    currentlyHandlingFinger = false;
   }
 
   // IF NO ACTIVITY, GO TO SLEEP
   if ((millis() - wakeStart) > AWAKE_TIME_MS)
   {
-    Serial.println("Timer expired, going back to deep sleep...");
+    Serial.println("[Main]: Starting deep sleep.");
     fingerLightSleep();
     esp_deep_sleep_start();
   }

@@ -24,5 +24,6 @@ bool deleteAllFingerprints();
 void enrollPressed();
 void fingerLightWakeup();
 void fingerLightSleep();
+void startFingerprintTask();
 
 #endif

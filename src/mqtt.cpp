@@ -27,25 +27,27 @@ void MqttWifiKeepAlive(void *parameters)
   {
     if (WiFi.status() != WL_CONNECTED)
     {
-      Serial.println("Connecting to wifi");
+      Serial.println("[WiFi]: Connecting.");
       WiFi.begin(ssid, key);
 
       unsigned long startAttemptTime = millis();
       while (WiFi.status() != WL_CONNECTED && millis() - startAttemptTime < WIFI_TIMEOUT_MS)
       {
-        vTaskDelay(250 / portTICK_PERIOD_MS); // prevent watchdog
+        vTaskDelay(250 / portTICK_PERIOD_MS);
       };
       if (WiFi.status() != WL_CONNECTED)
       {
-        Serial.println("[WiFi] Failed to establish connection");
+        Serial.println("[WiFi]: Connection failed.");
         vTaskDelay(20000 / portTICK_PERIOD_MS);
         continue;
       }
+      Serial.println("[WiFi]: Connected.");
     }
 
     if (WiFi.status() == WL_CONNECTED && !mqtt.connected())
     {
 
+      Serial.println("[MQTT]: Connecting.");
       mqtt.connect();
 
       unsigned long startAttemptTime = millis();
@@ -55,10 +57,11 @@ void MqttWifiKeepAlive(void *parameters)
       };
       if (!mqtt.connected())
       {
-        Serial.println("[MQTT] Failed to establish connection");
+        Serial.println("[MQTT]: Connection failed.");
         vTaskDelay(20000 / portTICK_PERIOD_MS);
         continue;
       }
+      Serial.println("[MQTT]: Connected.");
     }
 
     if (WiFi.status() == WL_CONNECTED && mqtt.connected())
@@ -66,8 +69,6 @@ void MqttWifiKeepAlive(void *parameters)
       mqtt.ping(); // ping server to keep connection alive
     }
 
-    // Serial.print("Connected to WiFi and MQTT: ");
-    // Serial.println(WiFi.localIP());
     vTaskDelay(10000 / portTICK_PERIOD_MS);
   }
 }
@@ -88,12 +89,12 @@ void publishGpsData(GPS_Data data)
 {
   if (WiFi.status() != WL_CONNECTED)
   {
-    Serial.println("WiFi not connected, skipping publish.");
+    Serial.println("[WiFi]: Not connected, skip publish.");
     return;
   }
   if (!mqtt.connected())
   {
-    Serial.println("MQTT not connected, skipping publish.");
+    Serial.println("[MQTT]: Not connected, skip publish.");
     return;
   }
   char payload[100];
@@ -116,16 +117,15 @@ void publishGpsData(GPS_Data data)
 
   *p = '\0';
 
-  Serial.print("Publishing CSV: ");
-  Serial.println(payload);
+  Serial.println("[MQTT]: Trying publish request...");
 
   if (gps_feed.publish(payload))
   {
-    Serial.println("Published GPS CSV!");
+    Serial.println("[MQTT]: Published request successfully. ");
   }
   else
   {
-    Serial.println("Failed to publish.");
+    Serial.println("[MQTT]: Publish failed.");
   }
 }
 

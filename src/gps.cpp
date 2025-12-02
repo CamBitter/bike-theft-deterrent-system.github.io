@@ -55,23 +55,26 @@ void GpsTask(void *parameters)
       if (!initialGPSData.fix)
       {
         initialGPSData = gpsData;
-        Serial.print("Stored initial GPS data, fix quality: ");
+        Serial.print("[GPS]: Initial fix quality: ");
         Serial.print(gpsData.fixQuality);
-        Serial.print(", # sats: ");
+        Serial.print(", sats: ");
         Serial.println(gpsData.satellites);
+      }
 
-        if (isMqttConnected())
-        {
-          publishGpsData(gpsData);
-        }
+      if (isMqttConnected())
+      {
+        Serial.println("[GPS] Publishing GPS Data to Adafruit IO");
+        publishGpsData(gpsData);
       }
     }
+
     vTaskDelay(5000 / portTICK_PERIOD_MS);
   }
 }
 
 void startGpsTask()
 {
+  Serial.println("[GPS] Started task.");
   xTaskCreate(
       GpsTask,
       "Gps_Task",
