@@ -1,7 +1,8 @@
 #ifndef GPS_H
 #define GPS_H
 
-struct GPS_Data {
+struct GPS_Data
+{
     bool fix;
     double latitude;
     double longitude;
@@ -15,7 +16,10 @@ struct GPS_Data {
     float angle;
 };
 
+extern GPS_Data initialGPSData;
+
 void initGPS();
 GPS_Data readGPS();
+void startGpsTask();
 
-#endif 
+#endif

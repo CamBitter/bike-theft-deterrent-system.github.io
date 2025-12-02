@@ -2,6 +2,17 @@
 
 bool enroll = false;
 Adafruit_Fingerprint finger = Adafruit_Fingerprint(&Serial1);
+bool currentlyHandlingFinger = false;
+
+void fingerLightWakeup()
+{
+    finger.LEDcontrol(FINGERPRINT_LED_FLASHING, 20, FINGERPRINT_LED_PURPLE, 3);
+}
+
+void fingerLightSleep()
+{
+    finger.LEDcontrol(FINGERPRINT_LED_FLASHING, 20, FINGERPRINT_LED_RED, 3);
+}
 
 void initFingerprint()
 {
