@@ -45,28 +45,38 @@ GPS_Data readGPS()
 
 void GpsTask(void *parameters)
 {
-  // HANDLE GPS DATA
-  GPS_Data gpsData = readGPS();
-  if (gpsData.fixQuality > 0)
+  for (;;)
   {
-    // STORE INITIAL GPS STATE
-    if (!initialGPSData.fix)
+    // HANDLE GPS DATA
+    GPS_Data gpsData = readGPS();
+    if (gpsData.fixQuality > 0)
     {
-      initialGPSData = gpsData;
-      Serial.print("Stored initial GPS data, fix quality: ");
-      Serial.print(gpsData.fixQuality);
-      Serial.print(", # sats: ");
-      Serial.println(gpsData.satellites);
-
-      if (isMqttConnected())
+      // STORE INITIAL GPS STATE
+      if (!initialGPSData.fix)
       {
-        publishGpsData(gpsData);
+        initialGPSData = gpsData;
+        Serial.print("Stored initial GPS data, fix quality: ");
+        Serial.print(gpsData.fixQuality);
+        Serial.print(", # sats: ");
+        Serial.println(gpsData.satellites);
+
+        if (isMqttConnected())
+        {
+          publishGpsData(gpsData);
+        }
       }
     }
+    vTaskDelay(5000 / portTICK_PERIOD_MS);
   }
-  vTaskDelay(5000 / portTICK_PERIOD_MS);
 }
 
 void startGpsTask()
 {
+  xTaskCreate(
+      GpsTask,
+      "Gps_Task",
+      4096,
+      NULL,
+      1,
+      NULL);
 }
