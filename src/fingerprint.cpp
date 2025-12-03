@@ -1,6 +1,7 @@
 #include "fingerprint.h"
 #include "config.h"
 #include "main.h"
+#include "oled.h"
 
 bool enroll = false;
 Adafruit_Fingerprint finger = Adafruit_Fingerprint(&Serial1);
@@ -18,7 +19,7 @@ void fingerLightSleep()
 
 bool checkFingerprint(bool &isArmed)
 {
-    delay(200);
+    delay(1000);
     uint8_t p = finger.getImage();
 
     if (p != FINGERPRINT_OK)
@@ -106,6 +107,7 @@ bool enrollFingerprint()
 
     int p = -1;
     Serial.println("[Finger]: Place finger.");
+    screens.enroll_status = "Place\nFinger";
     finger.LEDcontrol(FINGERPRINT_LED_ON, 0, FINGERPRINT_LED_PURPLE);
 
     while (p != FINGERPRINT_OK)
@@ -124,6 +126,7 @@ bool enrollFingerprint()
     }
 
     Serial.println("[Finger]: Remove finger.");
+    screens.enroll_status = "Remove\nfinger";
     finger.LEDcontrol(FINGERPRINT_LED_OFF, 0, FINGERPRINT_LED_PURPLE);
     delay(2000);
 
@@ -135,6 +138,7 @@ bool enrollFingerprint()
 
     p = -1;
     Serial.println("[Finger]: Place again.");
+    screens.enroll_status = "Place\nFinger\nAgain";
     finger.LEDcontrol(FINGERPRINT_LED_ON, 0, FINGERPRINT_LED_PURPLE);
 
     while (p != FINGERPRINT_OK)
@@ -168,6 +172,7 @@ bool enrollFingerprint()
     if (p == FINGERPRINT_OK)
     {
         Serial.println("[Finger]: Enrolled.");
+        screens.enroll_status = "Enrolled\nfinger";
         finger.LEDcontrol(FINGERPRINT_LED_FLASHING, 25, FINGERPRINT_LED_BLUE, 5);
         delay(2000);
         finger.LEDcontrol(FINGERPRINT_LED_OFF, 0, FINGERPRINT_LED_BLUE);
@@ -205,6 +210,7 @@ void toggleLock(bool &isArmed)
     Serial.println("[Finger]: Toggled.");
 
     finger.LEDcontrol(FINGERPRINT_LED_FLASHING, 25, FINGERPRINT_LED_BLUE, 3);
+
     delay(1000);
 }
 
@@ -272,19 +278,33 @@ void fingerTask(void *pvParameters)
             Serial.println("[Finger] Interrupt reset.");
             wakeStart = millis();
 
-            if (enroll && !isArmed)
+            if (enroll && !isArmed && ENROLL_SCREEN)
             {
                 Serial.println("[Finger] Starting enrollment.");
                 enrollFingerprint();
+                currentScreen = LOCK_SCREEN;
+                screens.enroll_status = "Enroll finger";
                 enroll = false;
+                currentlyHandlingFinger = false;
                 continue;
             }
 
             Serial.println("[Finger] Checking finger.");
             checkFingerprint(isArmed);
 
+            if (isArmed)
+            {
+                screens.lock_status = "LOCK\nARMED";
+                screens.enroll_status = "UNLOCK\nTO ENROLL";
+            }
+            else
+            {
+                screens.lock_status = "LOCK\nDISARMED";
+            }
+            currentScreen = LOCK_SCREEN;
+
             currentlyHandlingFinger = false;
-            vTaskDelay(pdMS_TO_TICKS(100));
+            vTaskDelay(pdMS_TO_TICKS(1000));
             continue;
         }
 

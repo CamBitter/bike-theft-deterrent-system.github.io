@@ -3,6 +3,7 @@
 #include "config.h"
 #include "gps.h"
 #include "mqtt.h"
+#include "oled.h"
 
 HardwareSerial GPS_Serial(GPS_UART);
 Adafruit_GPS GPS(&GPS_Serial);
@@ -61,12 +62,20 @@ void GpsTask(void *parameters)
         Serial.println(gpsData.satellites);
       }
 
+      // Concatenate GPS stats and display on OLED
+      char buffer[64];
+      snprintf(buffer, sizeof(buffer), "Fix:%d\nLat:%.5f\nLon:%.5f", gpsData.fixQuality, gpsData.latitude, gpsData.longitude);
+      screens.gps_status = buffer;
+
       if (isMqttConnected())
       {
         Serial.println("[GPS] Publishing GPS Data to Adafruit IO");
         publishGpsData(gpsData);
       }
     }
+
+    // NO GPS
+    screens.gps_status = "GPS:\nNO SATS";
 
     vTaskDelay(5000 / portTICK_PERIOD_MS);
   }
