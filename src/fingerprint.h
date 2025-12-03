@@ -13,7 +13,7 @@ extern bool currentlyHandlingFinger;
 
 void initFingerprint();
 bool checkFingerprint(bool &isArmed);
-uint8_t getFingerprintID();
+uint8_t getFingerprintID(uint8_t p);
 bool enrollFingerprint();
 void setArmed(bool &isArmed, bool state);
 void setEnrollMode(bool state);
