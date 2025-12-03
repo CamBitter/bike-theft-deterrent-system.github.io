@@ -28,7 +28,7 @@ void setup()
 
   Serial.begin(115200);
 
-  delay(500);
+  delay(2000);
 
   /* INIT ACCELEROMETER */
   if (!lis.begin(LIS3DH_ADDR))
@@ -46,7 +46,6 @@ void setup()
 
   /* INIT FINGERPRINT */
   initFingerprint();
-  startFingerprintTask();
 
   /* INIT MQTT */
   startMqttWifiTask();
@@ -109,7 +108,7 @@ void loop()
   }
 
   // IF NO ACTIVITY, GO TO SLEEP
-  if ((millis() - wakeStart) > AWAKE_TIME_MS)
+  if ((millis() - wakeStart) > AWAKE_TIME_MS && !currentlyHandlingFinger)
   {
     Serial.println("[Main]: Starting deep sleep.");
     fingerLightSleep();

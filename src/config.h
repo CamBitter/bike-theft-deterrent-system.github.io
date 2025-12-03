@@ -11,7 +11,7 @@
 #define WAKEUP_PINS_BITMASK ((1ULL << ACCELEROMETER_INTERRUPT_PIN) | (1ULL << FINGERSENSOR_INTERRUPT_PIN))
 
 // GPS pin (uses hardware serial on TX/RX)
-#define GPS_UART 1
+#define GPS_UART 2
 #define GPS_TX 21
 #define GPS_RX -1
 
