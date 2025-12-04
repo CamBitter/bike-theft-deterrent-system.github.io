@@ -208,8 +208,8 @@ void toggleLock(bool &isArmed)
     isArmed = !isArmed;
 
     Serial.println("[Finger]: Toggled.");
-
     finger.LEDcontrol(FINGERPRINT_LED_FLASHING, 25, FINGERPRINT_LED_BLUE, 3);
+    currentScreen = LOCK_SCREEN;
 
     delay(1000);
 }
@@ -278,7 +278,7 @@ void fingerTask(void *pvParameters)
             Serial.println("[Finger] Interrupt reset.");
             wakeStart = millis();
 
-            if (enroll && !isArmed && ENROLL_SCREEN)
+            if (!isArmed && currentScreen == ENROLL_SCREEN)
             {
                 Serial.println("[Finger] Starting enrollment.");
                 enrollFingerprint();
@@ -301,14 +301,13 @@ void fingerTask(void *pvParameters)
             {
                 screens.lock_status = "LOCK\nDISARMED";
             }
-            currentScreen = LOCK_SCREEN;
 
             currentlyHandlingFinger = false;
             vTaskDelay(pdMS_TO_TICKS(1000));
             continue;
         }
 
-        vTaskDelay(pdMS_TO_TICKS(20));
+        vTaskDelay(pdMS_TO_TICKS(500));
     }
 }
 
