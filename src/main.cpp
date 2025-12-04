@@ -15,6 +15,7 @@
 #include <WiFi.h>
 #include <Adafruit_MQTT_Client.h>
 #include "secrets.h"
+#include "oled.h"
 
 // RTC_DATA persists through Deep Sleep
 RTC_DATA_ATTR unsigned long wakeStart = 0;
@@ -51,6 +52,7 @@ void setup()
   startMqttWifiTask();
 
   /* INIT OLED */
+  initOled();
 
   /* STORE INTIAL GPS READING */
 
