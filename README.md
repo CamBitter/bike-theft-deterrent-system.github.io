@@ -1,99 +1,41 @@
-# Bike Theft Prevention System (BTPS)
+# Bike Theft Prevention System
 
 A proof-of-concept embedded system designed to deter bike theft, authenticate owners with biometrics, and provide location tracking after a theft event.
 
 ---
 
-## Overview
+# Introduction
 
-BTPS arms and disarms through a fingerprint sensor. When armed, it continuously monitors motion using an accelerometer. If sustained abnormal movement is detected, the system:
+Our goal was to create a system for securing a bike that took less time to use than a traditional U- or cable lock. Bike theft is a serious problem on Middlebury campus, with it happening to people we know or ourselves often. At the same time, traditional locks are a hassle to use when moving around campus as much as the average student, and many students tend to not lock their bikes, making the issue worse. Out goal was to make a bike theft deterent that would require little work to operate, and strongly discourage stealing a bike. We determined the best solution to this problem would utilize a microcontroller to manage an array of theft deterent and retreival methods.
 
-1. Activates a car-horn–based auditory deterrent  
-2. Sends location updates to an Adafruit IO dashboard  
+In order to lock and unlock the bike, we determined that a fingerprint scanner would be ideal for a quick and easy lock and unlock without having to manage a physical aspect. An accellerometer would detect when the bike was stolen, by measuring when the bike was moving while locked. Once the system determined a theft attempt was underway, it would activate a loud alarm, similar in volume to a car horn, and track the bike's location via an onboard GPS. An MQTT server would receive information from the device and display it to the owner. An OLED display would inform the user as to the lock status, battery, and provide information on the fingerprint registration system.
 
-An onboard OLED displays system status and fingerprint-management options.
-
----
-
-## Motivation
-
-Bike losses on campus are frequent, and traditional locks are slow, bulky, and often used incorrectly. Recovery tools like pubsafe rarely help. BTPS aims to provide a compact, always-mounted, fast-arming system that deters theft and helps locate a stolen bike.
+(put references here)
 
 ---
 
-## System Components
+# Methods
 
-- **Fingerprint Authentication (FPA)**  
-  Controls arming/disarming using registered profiles.
+## Components
 
-- **Bike Theft Event Detection Device (BTEDD)**  
-  Accelerometer sampled over a sustained period to avoid false positives.
-
-- **Auditory Deterrent**  
-  12V car horn controlled via MOSFET.
-
-- **GPS Tracking Module**  
-  Transmits location data via campus Wi-Fi using Adafruit IO and MQTT.
-
-- **OLED Display + LED Indicator**  
-  Shows lock status and supports fingerprint profile management.
+### Fingerprint Scanner
 
 ---
 
-## Development Milestones
-
-### 1. Fingerprint Authentication (~1 week)  
-Connect sensor → MCU; enroll and verify fingerprints.  
-*Owners: Danny, River*
-
-### 2. Accelerometer Integration (~1 week)  
-Configure SPI → read motion → detect BTE.  
-*Owners: River, Cam*
-
-### 3. Horn + Power System (~1 week)  
-MOSFET wiring → 12V battery → MCU control → regulator wiring.  
-*Owners: Cam, Danny*
-
-### 4. GPS Tracking (~1 week)  
-Attach GPS → configure sleep/wake → push location to Adafruit IO.  
-*Owners: River, Cam*
-
-### 5. Adafruit IO Dashboard (~1 week)  
-Set up dashboard → receive GPS + status data.  
-*Owners: Cam, River*
-
-### 6. OLED Display (~1 week)  
-Display armed/disarmed status → fingerprint admin → LED indicator.  
-*Owners: Danny, Cam*
+### Accellerometer
 
 ---
 
-## Hardware List
-
-| Item                | Supplier | Cost    |
-|---------------------|----------|---------|
-| Fingerprint sensor  | Adafruit | $39.95  |
-| Feather OLED        | Adafruit | $15.95  |
-| GPS Module          | Adafruit | $29.95  |
-| Car Horn            | Amazon   | $12.99  |
-| Battery Pack        | Amazon   | $18.56  |
-| Multicolor LED      | Vaccari  | —       |
-| Accelerometer       | Adafruit | $4.95   |
-| Regulator           | Adafruit | $1.25   |
-| MOSFET              | Adafruit | $2.25   |
-| **Total**           | —        | **$124.85** |
+### Horn
 
 ---
 
-## Behavior Summary
-
-- Detect sustained large movement → trigger horn for 1 minute → auto-shutoff after 1 minute  
-- GPS sends location data to Adafruit IO Dashboard
-- Fingerprint reader pinned to MCU (standard Adafruit wiring)
+### GPS
 
 ---
 
-## License
+### OLED Display
 
-MIT
+---
 
+## Bill of Materials
