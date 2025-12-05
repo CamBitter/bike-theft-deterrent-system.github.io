@@ -39,3 +39,44 @@ In order to lock and unlock the bike, we determined that a fingerprint scanner w
 ---
 
 ## Bill of Materials
+
+| Item                | Supplier | Cost    |
+|---------------------|----------|---------|
+| Huzzah32 MCU        | Adafruit | 21.95   |
+| Fingerprint sensor  | Adafruit | $39.95  |
+| Feather OLED        | Adafruit | $15.95  |
+| GPS Module          | Adafruit | $29.95  |
+| Car Horn            | Amazon   | $12.99  |
+| Battery Pack        | Amazon   | $18.56  |
+| Accelerometer       | Adafruit | $4.95   |
+| Regulator           | Adafruit | $1.25   |
+| MOSFET              | Adafruit | $2.25   |
+| **Total**           | —        | **$124.85** |
+
+---
+
+# Results
+
+---
+
+# Accessibility
+
+---
+
+# Ethical Implications
+
+---
+
+# Schedule
+
+---
+
+# Issues
+
+---
+
+# Future work
+
+---
+
+# references
