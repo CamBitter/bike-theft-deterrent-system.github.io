@@ -9,7 +9,7 @@ A proof-of-concept embedded system designed to deter bike theft, authenticate ow
 BTPS arms and disarms through a fingerprint sensor. When armed, it continuously monitors motion using an accelerometer. If sustained abnormal movement is detected, the system:
 
 1. Activates a car-horn–based auditory deterrent  
-3. Sends location updates to an Adafruit IO dashboard  
+2. Sends location updates to an Adafruit IO dashboard  
 
 An onboard OLED displays system status and fingerprint-management options.
 
