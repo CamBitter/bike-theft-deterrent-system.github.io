@@ -93,6 +93,6 @@ The volume of the horn is the most identifiable impact that the device could hav
 
 ---
 
-# references
+# References
 
 Adafruit (2020) 128x64 OLED FeatherWing [Example code]. https://learn.adafruit.com/adafruit-128x64-oled-featherwing/arduino-code
