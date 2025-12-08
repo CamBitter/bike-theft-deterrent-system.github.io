@@ -18,7 +18,7 @@ In order to lock and unlock the bike, we determined that a fingerprint scanner w
 
 ## MCU
 
-We used the Huzzah32 esp32 feather board by Adafruit due to its wifi capabilities and because it was the hardware that we already had on hand. We used the Platformio coding environment on Visual Studio Code to flash to the device, which controlled all of the periphreals.
+We used the Huzzah32 esp32 feather board by Adafruit due to its wifi capabilities and because it was the hardware that we already had on hand. We used the Platformio coding environment on Visual Studio Code to flash to the device, which controlled all of the periphreals. We use its I2C and SPI functionalities, allowing it to manage all of the devices, and it also manipulates the horn via an output pin that controls a MOSFET. 
 
 ---
 
@@ -36,9 +36,13 @@ We used the Huzzah32 esp32 feather board by Adafruit due to its wifi capabilitie
 
 ### Horn
 
+The horn is intended to by supplied with a 12v power supply, as opposed to the 5v that the MCU expects. For this reason, we purchased a regulator and MOSFET, and purchased a 12v battery. The voltage is regulated down to 5v for the MCU, and the MCU controls the horn indirectly, via the MOSFET. The MOSFET allows the MCU to allow or disallow current to the horn without directly supplying the current at the level the horn expects.
+
 ---
 
 ### GPS
+
+The GPS is connected via its RX pin to the MCU, which makes up half of an SPI connection. In the issues section this will be explained. As it stands, the GPS provides data in the form of coordinates.
 
 ---
 
@@ -67,7 +71,7 @@ We referenced the code provided by the device supplier to write our code for the
 | Accelerometer       | Adafruit | $4.95   | https://www.adafruit.com/product/2809 |
 | Regulator           | Adafruit | $1.25   | https://www.adafruit.com/product/2165 |
 | MOSFET              | Adafruit | $2.25   | https://www.adafruit.com/product/355  |
-| **Total**           | —        | **$124.85** |
+| **Total**           | —        | **$124.85** | |
 
 ---
 
@@ -91,13 +95,54 @@ The volume of the horn is the most identifiable impact that the device could hav
 
 # Schedule
 
+Our original schedule was as follows:
+
+Finger Print Authentication (~1 week)
+  We will begin by ensuring our FPA functions. This will consist of connecting the Fingerprint Sensor to our MCU and configuring it to verify certain finger profiles.
+Accelerometer (~1 week)
+  We will need to configure the SPI communication to be able to read data from the accelerometer and determine when motion is detected
+Horn & Battery configuration & wiring (~1 week)
+  Involves wiring the BTEDD through the MOSFET to the battery pack as well as using the Huzzah board to control power to the BTEDD
+Wire the regulator from the Huzzah to the battery (~1 week)
+  We will next connect our Car Horn to the MCU. Since the car requires 12 volts, it will be connected through a MOSFET directly to the 12v battery
+GPS detection (~1 week)
+  We will connect a GPS to the MCU, which will be usually sleeping. In the case of a BTE, it shall awaken, and will begin transmitting location data to the user through Adafruit IO. We are assuming the nature of the bike thief to be another student, so we will rely on campus Wi-Fi.
+Adafruit IO Dashboard (~1 week)
+  We will use the IO dashboard example code to push GPS and other data to a dashboard we can view
+OLED Display (~1 week)
+    We will use a small OLED display compatible with our MCU to indicate locking status as well as facilitate adding and deleting finger profiles. An LED will also be used as a more visible armed/disarmed indicator (Danny)
+
+Due to the limitation of time we had to complete the project, the actual schedule went as follows:
+
+Accelerometer (2 days)
+GPS detection (2 days)
+Adafruit IO Dashboard (2 days)
+Finger Print Authentication (3 days)
+OLED Display (1 day)
+Horn & Battery configuration & wiring (~1 week)
+Wire the regulator from the Huzzah to the battery (1 day)
+
+We worked mostly asynchroniously on different tasks, but this was the general order in which tasks were completed. We had multiple problems with the horn and battery configuration, detailed below.
+
 ---
 
 # Issues
 
+The first major issue we encountered was that the GPS module didn't directly have a TX and RX line, which make up an SPI connection interface. The model GPS we bought was intended to connect to a computer or rasberry pi via a USB-C port, and formatted its pin outputs in terms of the USB-C transmission protocol. We realized we had purchased the wrong model GPS, but we figured out that we could directly solder wires to the physical  GPS module, bypassing the conversion unit. Although the RX pin was soldered just fine, the delicate nature of the task resulted in the TX pin being ripped off of the module. This means that we can receive data from the GPS, which outputs constantly, but we can't send input to it. Ultimately, this doesn't affect the function of the product greatly.
+
+When we integrated the code for the periphreals into the main code, it would output "invalid header" and get stuck in a boot loop. The same code functioned in Arduino IDE, so we had to do a lot of work to figure out why PlatformIO was struggling. The problem was with library versions, as in PlatformIO, we had the wrong library version. Arduino had the newest versions, so we had to manually update the libraries in PlatformIO.
+
+Due to the large number of sensors that need to work at the same time, we encountered performance issues. We solved this by creating "task" modules, which are asynchronously ran, which doesn't block the main code from running.
+
+Something about the horn.
+
 ---
 
 # Future work
+
+The form factor of our finished product is not ideal for actual applications. It works as a proof of concept, but ideally the device would fit inside the hollow internal tubes of the bike frame. As it stands, a neon box will realistically be a target for thieves.
+
+As it stands, the user will have to access the Adafruit IO dashboard via the website, but ideally for ease of use we could port the data over to an app.
 
 ---
 
