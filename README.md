@@ -18,9 +18,15 @@ In order to lock and unlock the bike, we determined that a fingerprint scanner w
 
 ## MCU
 
+We used the Huzzah32 esp32 feather board by Adafruit due to its wifi capabilities and because it was the hardware that we already had on hand. We used the Platformio coding environment on Visual Studio Code to flash to the device, which controlled all of the periphreals.
+
+---
+
 ## Periphreals
 
 ### Fingerprint Scanner
+
+
 
 ---
 
@@ -38,19 +44,21 @@ In order to lock and unlock the bike, we determined that a fingerprint scanner w
 
 ### OLED Display
 
+We decided on the Adafruit 128x64 OLED FeatherWing due to its ability to connect to the MCU easily, its simple input system, and modest graphical capabilities, being limited to black and white.
+
 The display is used to give the user information, and its three input buttons are used for the user to communicate to the system. It physically acts as a wing to the MCU, sitting directly on it. It communicates via SPI, and uses the adafruit SH110X graphics drivers. The adafruit GFX library provides commands to display text, and images.
 
 Typically, the monochrome screen is blank. When the A button is pressed, it displays the battery charge and lock/unlock status. The B button enrolls a fingerprint, assuming the device is unlocked. The C button displays the GPS status, giving the current connected satelite number and coordinates. When the device goes to sleep, the screen will become blank as it powers down.
 
-We referenced the code provided by the device supplier to write our code for the display.
+We referenced the code provided by the device supplier to write our code for the display.¹
 
 ---
 
 ## Bill of Materials
 
-| Item                | Supplier | Cost    |
-|---------------------|----------|---------|
-| Huzzah32 MCU        | Adafruit | 21.95   |
+| Item                | Supplier | Cost    | Store link |
+|---------------------|----------|---------|------------|
+| Huzzah32 MCU        | Adafruit | 21.95   | https://www.adafruit.com/product/3405?gad_source=1&gad_campaignid=21079267614&gclid=Cj0KCQiAi9rJBhCYARIsALyPDtvKQ9JE4rx-bKRIX1XCsVk0uOygEslfqhE2tWFbhpGz3NiuHsw5Z7gaAne4EALw_wcB |
 | Fingerprint sensor  | Adafruit | $39.95  |
 | Feather OLED        | Adafruit | $15.95  |
 | GPS Module          | Adafruit | $29.95  |
@@ -95,4 +103,4 @@ The volume of the horn is the most identifiable impact that the device could hav
 
 # References
 
-Adafruit (2020) 128x64 OLED FeatherWing [Example code]. https://learn.adafruit.com/adafruit-128x64-oled-featherwing/arduino-code
+1. Adafruit (2020) 128x64 OLED FeatherWing [Example code]. https://learn.adafruit.com/adafruit-128x64-oled-featherwing/arduino-code
