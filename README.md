@@ -58,15 +58,15 @@ We referenced the code provided by the device supplier to write our code for the
 
 | Item                | Supplier | Cost    | Store link |
 |---------------------|----------|---------|------------|
-| Huzzah32 MCU        | Adafruit | 21.95   | https://www.adafruit.com/product/3405?gad_source=1&gad_campaignid=21079267614&gclid=Cj0KCQiAi9rJBhCYARIsALyPDtvKQ9JE4rx-bKRIX1XCsVk0uOygEslfqhE2tWFbhpGz3NiuHsw5Z7gaAne4EALw_wcB |
-| Fingerprint sensor  | Adafruit | $39.95  |
-| Feather OLED        | Adafruit | $15.95  |
-| GPS Module          | Adafruit | $29.95  |
-| Car Horn            | Amazon   | $12.99  |
-| Battery Pack        | Amazon   | $18.56  |
-| Accelerometer       | Adafruit | $4.95   |
-| Regulator           | Adafruit | $1.25   |
-| MOSFET              | Adafruit | $2.25   |
+| Huzzah32 MCU        | Adafruit | 21.95   | https://www.adafruit.com/product/3619 |
+| Fingerprint sensor  | Adafruit | $39.95  | https://www.adafruit.com/product/4651 |
+| Feather OLED        | Adafruit | $15.95  | https://www.adafruit.com/product/6313 |
+| GPS Module          | Adafruit | $29.95  | https://www.adafruit.com/product/4279 |
+| Car Horn            | Amazon   | $12.99  | https://www.amazon.com/dp/B08B4LTRJX  |
+| Battery Pack        | Amazon   | $18.56  | https://www.amazon.com/dp/B09DP9D8Q4  |
+| Accelerometer       | Adafruit | $4.95   | https://www.adafruit.com/product/2809 |
+| Regulator           | Adafruit | $1.25   | https://www.adafruit.com/product/2165 |
+| MOSFET              | Adafruit | $2.25   | https://www.adafruit.com/product/355  |
 | **Total**           | —        | **$124.85** |
 
 ---
