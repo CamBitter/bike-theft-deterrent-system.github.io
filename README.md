@@ -1,4 +1,4 @@
-# Bike Theft Prevention System
+63# Bike Theft Prevention System
 
 A proof-of-concept embedded system designed to deter bike theft, authenticate owners with biometrics, and provide location tracking after a theft event.
 
