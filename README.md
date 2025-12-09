@@ -26,11 +26,11 @@ We used the Huzzah32 esp32 feather board by Adafruit due to its wifi capabilitie
 
 ### Fingerprint Scanner
 
-
+We are using Adafruits "Rugged Panel Mount Fingerprint Sensor with Bi-Color LED Ring - R503" as our fingerprint sensor. The sensor exchanges data with the MCU on the RX and TX pins, as well as a separate interrupt pin for wakeup. With onboard memory, the sensor manages all fingerprint reading, verification, and storage internally. The red, pink, and blue LED ring is configured to show when the system is woken via the sensor. It also indicates if a scan is read as a match, and, with the OLED, walks the user through enrolling a new fingerprint. 
 
 ---
 
-### Accellerometer
+### Accelerometer
 
 ---
 
