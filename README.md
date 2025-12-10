@@ -6,7 +6,7 @@ A proof-of-concept embedded system designed to deter bike theft, authenticate ow
 
 # Introduction
 
-Our goal was to create a system for securing a bike that took less time to use than a traditional U- or cable lock. Bike theft is a serious problem on Middlebury campus, with it happening to people we know or ourselves often. At the same time, traditional locks are a hassle to use when moving around campus as much as the average student, and many students tend to not lock their bikes, making the issue worse. Out goal was to make a bike theft deterent that would require little work to operate, and strongly discourage stealing a bike. We determined the best solution to this problem would utilize a microcontroller to manage an array of theft deterent and retreival methods.
+Our goal was to create a system for securing a bike that took less time to use than a traditional U- or cable lock. Bike theft is a serious problem on Middlebury campus, with it happening to people we know or ourselves often. At the same time, traditional locks are a hassle to use when moving around campus as much as the average student, and many students tend to not lock their bikes, making the issue worse. Out goal was to make a bike theft deterent that would require little work to operate, and strongly discourage bike theft. We determined the best solution to this problem would utilize a microcontroller to manage an array of theft deterent and retreival methods.
 
 In order to lock and unlock the bike, we determined that a fingerprint scanner would be ideal for a quick and easy lock and unlock without having to manage a physical aspect. An accellerometer would detect when the bike was stolen, by measuring when the bike was moving while locked. Once the system determined a theft attempt was underway, it would activate a loud alarm, similar in volume to a car horn, and track the bike's location via an onboard GPS. An MQTT server would receive information from the device and display it to the owner. An OLED display would inform the user as to the lock status, battery, and provide information on the fingerprint registration system.
 
@@ -18,19 +18,21 @@ In order to lock and unlock the bike, we determined that a fingerprint scanner w
 
 ## MCU
 
-We used the Huzzah32 esp32 feather board by Adafruit due to its wifi capabilities and because it was the hardware that we already had on hand. We used the Platformio coding environment on Visual Studio Code to flash to the device, which controlled all of the periphreals. We use its I2C and SPI functionalities, allowing it to manage all of the devices, and it also manipulates the horn via an output pin that controls a MOSFET. 
+We used the Huzzah32 ESP32 Feather by Adafruit due to its WiFi and deep sleep capabilities, and because it we already had on hand. We used PlatformIO to build the structure of our project. We use I2C, SPI, and UART protocols to communicate with our array of sensors and peripherals. The ESP32 uses a MOSFET to control a horn wired to a 12V power source. We also make effective use of the ESP32's dual core. Our sensor loops are handled as FreeRTOS tasks which allow us to spread out CPU load and ensure our code is non-blocking. 
 
 ---
 
-## Periphreals
+## Peripherals
 
 ### Fingerprint Scanner
 
-We are using Adafruits "Rugged Panel Mount Fingerprint Sensor with Bi-Color LED Ring - R503" as our fingerprint sensor. The sensor exchanges data with the MCU on the RX and TX pins, as well as a separate interrupt pin for wakeup. With onboard memory, the sensor manages all fingerprint reading, verification, and storage internally. The red, pink, and blue LED ring is configured to show when the system is woken via the sensor. It also indicates if a scan is read as a match, and, with the OLED, walks the user through enrolling a new fingerprint. 
+We are using Adafruit's "Rugged Panel Mount Fingerprint Sensor with Bi-Color LED Ring - R503" as our fingerprint sensor. The sensor exchanges data with the MCU on the RX and TX pins, as well as a separate interrupt pin for wakeup. With onboard memory, the sensor manages all fingerprint reading, verification, and storage internally. The red, pink, and blue LED ring is configured to show when the system is woken via the sensor. It also indicates if a scan is read as a match, and, with the OLED, walks the user through enrolling a new fingerprint. 
 
 ---
 
 ### Accelerometer
+
+We are using Adafruit's LIS3DH acceleromter. It features high sensitiviy, 3-axis detection, and low-power modes. It also can be configured to supply and interrupt when a certain threshold of motion is setup. Our acceleromter is primarly used to wake up our system. When the acceleromter detects a threshold of motion, it will trigger the ESP32 wakeup process. Once the interrupt is triggered, the acceleromter moves into a higher-power mode, where it reads for acceleration more frequently. New acceleration events will reset the ESP32 sleep timer. It is wired using I2C.
 
 ---
 
@@ -42,7 +44,7 @@ The horn is intended to by supplied with a 12v power supply, as opposed to the 5
 
 ### GPS
 
-The GPS is connected via its RX pin to the MCU, which makes up half of an SPI connection. In the issues section this will be explained. As it stands, the GPS provides data in the form of coordinates.
+The GPS is connected via its RX pin to the MCU, which makes up half of an SPI connection. In the issues section this will be explained. As it stands, the GPS provides data in the form of coordinates. When the MCU wakes up, its begins reading from the GPS sensor, which sends it data in the National Marine Electronics Association (NMEA) data format. This is then parsed using an Adafruit library, and stored at the initial wakeup of the ESP32. Before the ESP32 timer expires, it checks the GPS data again and determines if the system has been moved more than a threshold distance (in our case, 15ft). If this threshold is exceeded, then the ESP32 moves into the alarm state.
 
 ---
 
@@ -130,7 +132,7 @@ We worked mostly asynchroniously on different tasks, but this was the general or
 
 The first major issue we encountered was that the GPS module didn't directly have a TX and RX line, which make up an SPI connection interface. The model GPS we bought was intended to connect to a computer or rasberry pi via a USB-C port, and formatted its pin outputs in terms of the USB-C transmission protocol. We realized we had purchased the wrong model GPS, but we figured out that we could directly solder wires to the physical  GPS module, bypassing the conversion unit. Although the RX pin was soldered just fine, the delicate nature of the task resulted in the TX pin being ripped off of the module. This means that we can receive data from the GPS, which outputs constantly, but we can't send input to it. Ultimately, this doesn't affect the function of the product greatly.
 
-When we integrated the code for the periphreals into the main code, it would output "invalid header" and get stuck in a boot loop. The same code functioned in Arduino IDE, so we had to do a lot of work to figure out why PlatformIO was struggling. The problem was with library versions, as in PlatformIO, we had the wrong library version. Arduino had the newest versions, so we had to manually update the libraries in PlatformIO.
+When we integrated the code for the peripherals into the main code, it would output "invalid header" and get stuck in a boot loop. The same code functioned in Arduino IDE, so we had to do a lot of work to figure out why PlatformIO was struggling. The problem was with library versions, as in PlatformIO, we had the wrong library version. Arduino had the newest versions, so we had to manually update the libraries in PlatformIO.
 
 Due to the large number of sensors that need to work at the same time, we encountered performance issues. We solved this by creating "task" modules, which are asynchronously ran, which doesn't block the main code from running.
 
