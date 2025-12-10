@@ -120,6 +120,7 @@ We will use the IO dashboard example code to push GPS and other data to a dashbo
 OLED Display (~1 week)
 We will use a small OLED display compatible with our MCU to indicate locking status as well as facilitate adding and deleting finger profiles. An LED will also be used as a more visible armed/disarmed indicator (Danny)
 
+---
 Due to the limitation of time we had to complete the project, the actual schedule went as follows:
 
 Accelerometer (2 days)
