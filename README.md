@@ -101,16 +101,22 @@ Our original schedule was as follows:
 
 Finger Print Authentication (~1 week)
   We will begin by ensuring our FPA functions. This will consist of connecting the Fingerprint Sensor to our MCU and configuring it to verify certain finger profiles.
+
 Accelerometer (~1 week)
   We will need to configure the SPI communication to be able to read data from the accelerometer and determine when motion is detected
+
 Horn & Battery configuration & wiring (~1 week)
   Involves wiring the BTEDD through the MOSFET to the battery pack as well as using the Huzzah board to control power to the BTEDD
+
 Wire the regulator from the Huzzah to the battery (~1 week)
   We will next connect our Car Horn to the MCU. Since the car requires 12 volts, it will be connected through a MOSFET directly to the 12v battery
+
 GPS detection (~1 week)
   We will connect a GPS to the MCU, which will be usually sleeping. In the case of a BTE, it shall awaken, and will begin transmitting location data to the user through Adafruit IO. We are assuming the nature of the bike thief to be another student, so we will rely on campus Wi-Fi.
+
 Adafruit IO Dashboard (~1 week)
   We will use the IO dashboard example code to push GPS and other data to a dashboard we can view
+
 OLED Display (~1 week)
     We will use a small OLED display compatible with our MCU to indicate locking status as well as facilitate adding and deleting finger profiles. An LED will also be used as a more visible armed/disarmed indicator (Danny)
 
