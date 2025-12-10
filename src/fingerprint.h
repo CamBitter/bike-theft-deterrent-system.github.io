@@ -15,12 +15,12 @@ extern Adafruit_Fingerprint finger;
 extern bool currentlyHandlingFinger;
 
 void initFingerprint();
-bool checkFingerprint(bool &isArmed);
+bool checkFingerprint();
 uint8_t getFingerprintID(uint8_t p);
 bool enrollFingerprint();
-void setArmed(bool &isArmed, bool state);
+void setArmed(bool state);
 void setEnrollMode(bool state);
-void toggleLock(bool &isArmed);
+void toggleLock();
 int getNextFreeID();
 bool deleteFingerprint(uint8_t id);
 bool deleteAllFingerprints();

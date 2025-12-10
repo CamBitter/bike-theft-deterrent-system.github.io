@@ -19,5 +19,6 @@ extern int currentScreen;
 void initOled();
 void dannyWrite(const char *msg);
 void resetDisplay();
+void oledShutdown();
 
 #endif

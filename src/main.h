@@ -1,7 +1,7 @@
 #ifndef MAIN_H
 #define MAIN_H
 
-extern unsigned long wakeStart;
-extern bool isArmed;
+extern long wakeStart;
+extern RTC_DATA_ATTR bool isArmed;
 
 #endif

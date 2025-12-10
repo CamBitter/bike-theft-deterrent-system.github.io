@@ -114,8 +114,6 @@ void loop()
   {
     Serial.println("[Main]: Starting deep sleep.");
     fingerLightSleep();
-    esp_deep_sleep_start();
+    oledShutdown();
+    delay(50);
   }
-
-  delay(50);
-}

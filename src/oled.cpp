@@ -4,6 +4,7 @@
 #include <Adafruit_SH110X.h>
 #include "oled.h"
 #include "fingerprint.h"
+#include "main.h"
 
 Adafruit_SH1107 display = Adafruit_SH1107(64, 128, &Wire);
 
@@ -31,6 +32,7 @@ void dannyWrite(const char *msg)
 
 void oledTask(void *parameters)
 {
+    char buffer[64];
     for (;;)
     {
         if (!digitalRead(BUTTON_A))
@@ -48,15 +50,16 @@ void oledTask(void *parameters)
 
         switch (currentScreen)
         {
-        case 0:
-            dannyWrite(screens.lock_status);
+        case LOCK_SCREEN:
+            snprintf(buffer, sizeof(buffer), "Lock:\n%s", isArmed ? "ARMED" : "DISARMED");
+            dannyWrite(buffer);
             break;
 
-        case 1:
+        case ENROLL_SCREEN:
             dannyWrite(screens.enroll_status);
             break;
 
-        case 2:
+        case GPS_SCREEN:
             dannyWrite(screens.gps_status);
             break;
 
@@ -64,8 +67,15 @@ void oledTask(void *parameters)
             dannyWrite("hmm..");
             break;
         }
+        vTaskDelay(pdMS_TO_TICKS(500));
     }
-    vTaskDelay(pdMS_TO_TICKS(2000));
+}
+
+void oledShutdown()
+{
+    display.clearDisplay();
+    display.display();
+    display.oled_command(SH110X_DISPLAYOFF);
 }
 
 void startOledTask()

@@ -17,7 +17,7 @@ void fingerLightSleep()
     finger.LEDcontrol(FINGERPRINT_LED_FLASHING, 20, FINGERPRINT_LED_RED, 3);
 }
 
-bool checkFingerprint(bool &isArmed)
+bool checkFingerprint()
 {
     delay(1000);
     uint8_t p = finger.getImage();
@@ -33,7 +33,7 @@ bool checkFingerprint(bool &isArmed)
     uint8_t result = getFingerprintID(p);
     if (result != 255)
     {
-        toggleLock(isArmed);
+        toggleLock();
         return true;
     }
 
@@ -188,7 +188,7 @@ bool enrollFingerprint()
     }
 }
 
-void setArmed(bool &isArmed, bool state)
+void setArmed(bool state)
 {
     isArmed = state;
     Serial.print("[Finger]: Armed: ");
@@ -202,7 +202,7 @@ void setEnrollMode(bool state)
     Serial.println(enroll ? "true" : "false");
 }
 
-void toggleLock(bool &isArmed)
+void toggleLock()
 {
     Serial.println("[Finger]: Toggling lock.");
     isArmed = !isArmed;
@@ -290,7 +290,7 @@ void fingerTask(void *pvParameters)
             }
 
             Serial.println("[Finger] Checking finger.");
-            checkFingerprint(isArmed);
+            checkFingerprint();
 
             if (isArmed)
             {
