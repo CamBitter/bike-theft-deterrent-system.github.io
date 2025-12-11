@@ -59,7 +59,8 @@ More info can be found on the [Adafruit LIS3DH Overview](https://learn.adafruit.
 
 ### Horn
 
-The horn is supplied with a 12v power supply and requires many more amps than is supported by the ESP32 and peripherals. For this reason, we purchased a 12V battery, voltage regulator, and MOSFET. The voltage is regulated down to a safe 5V for the ESP32, and the ESP32 controls the horn indirectly via the MOSFET. The MOSFET allows the MCU to allow or disallow current to the horn directly from the battery without directly supplying the current at the level the horn expects.
+The horn is supplied with a 12v power supply and requires many more amps than is supported by the ESP32 and peripherals. For this reason, we purchased a 12V battery, voltage regulator, and MOSFET. The voltage is regulated down to a safe 5V for the ESP32, and the ESP32 controls the horn indirectly via the MOSFET. The MOSFET allows the MCU to allow or disallow current to the horn directly from the battery without directly supplying the current at the level the horn expects. The horn is direcly connected to the +12v battery, and recieves ground through the MOSFET. 
+![See a wiring diagram of the horn here](images/hornDIAGRAM.jpeg)
 
 ---
 
