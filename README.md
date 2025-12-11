@@ -228,9 +228,8 @@ A primary problem we encountered was getting out horn to work. Since the intensi
 
 # Future work
 
-The form factor of our finished product is not ideal for actual applications. It works as a proof of concept, but ideally the device would fit inside the hollow internal tubes of the bike frame. As it stands, a neon box will realistically be a target for thieves.
-
-As it stands, the user will have to access the Adafruit IO dashboard via the website, but ideally for ease of use we could port the data over to an app.
+We have two realms of future work: future polishing, to get our product to he desired presentable state, and more lofty future work, to turn our proof of concept into a more feasible product. To polish the product, the primary work includes figuring out the slight power supply issues, working through the horn (so it actually works), and integrating the Adafruit dashboard more completely. Currently, the user must access the GPS data through the AdafruitIO dashboard website. An app or text message system could be more convenient. 
+Looking further ahead, the form factor of our finished product is not ideal for actual applications. It works as a proof of concept, but ideally the device would fit inside the hollow internal tubes of the bike frame. As it stands, a neon box will realistically be a target for thieves. It we were to integrate the product deeper into a bike, we could also develop a small lock, to physically restrain the bike as well as deter thieves.
 
 ---
 
