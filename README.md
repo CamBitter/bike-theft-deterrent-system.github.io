@@ -97,7 +97,7 @@ As opposed to simply displaying information, this screen is associated with prom
 ![GPS_coordinates](GPS_coordinates.jpg)
 
 The device recognizing a test theft event
-
+![alarm_activated](alarm_activated.jpg)
 
 ---
 
