@@ -22,6 +22,8 @@ We also decided that this project would perfectly fit the course objectives and 
 
 We used the Huzzah32 ESP32 Feather by Adafruit due to its powerful dual core CPU, WiFi, and deep sleep capabilities. We also already had on hand, and didn't have any need to use a different board. We used PlatformIO to build the structure of our project. We use I2C, SPI, and UART protocols to communicate with our acceleromter, OLED, fingerprint sensor, and GPS module. The ESP32 handles all the tasks for these peripherals. The ESP32 also handles a MOSFET connected to a horn wired to a 12V power source. This allows the ESP32 to "power" the horn with 12V and many amps, while remaining safe and secure on its 5V line. We also make effective use of the ESP32's dual core. Our sensor loops are handled as FreeRTOS tasks which allow us to spread out CPU load and ensure our code is non-blocking. 
 
+![ESP32 Feather](ESP32_photo.png)
+
 ---
 
 ## Peripherals
@@ -43,6 +45,8 @@ Then you can access all sorts of functions such as `finger.LEDcontrol()`, `finge
 
 More info can be found on the [Adafruit Fingerprint Sensor Overview](https://learn.adafruit.com/adafruit-optical-fingerprint-sensor)
 
+![Fingerprint Sensor](Fingerprint_Sensor_photo.png)
+
 ---
 
 ### Accelerometer
@@ -55,12 +59,15 @@ We're not actually ever reading from the accelerometer, rather it's just sending
 
 More info can be found on the [Adafruit LIS3DH Overview](https://learn.adafruit.com/adafruit-lis3dh-triple-axis-accelerometer-breakout)
 
+![Accelerometer](LIS3DH_photo.png)
+
 ---
 
 ### Horn
 
-The horn is supplied with a 12v power supply and requires many more amps than is supported by the ESP32 and peripherals. For this reason, we purchased a 12V battery, voltage regulator, and MOSFET. The voltage is regulated down to a safe 5V for the ESP32, and the ESP32 controls the horn indirectly via the MOSFET. The MOSFET allows the MCU to allow or disallow current to the horn directly from the battery without directly supplying the current at the level the horn expects. The horn is direcly connected to the +12v battery, and recieves ground through the MOSFET. 
-![See a wiring diagram of the horn here](images/hornDIAGRAM.jpeg)
+The horn is supplied with a 12v power supply and requires many more amps than is supported by the ESP32 and peripherals. For this reason, we purchased a 12V battery, voltage regulator, and MOSFET. The voltage is regulated down to a safe 5V for the ESP32, and the ESP32 controls the horn indirectly via the MOSFET. The MOSFET allows the MCU to allow or disallow current to the horn directly from the battery without directly supplying the current at the level the horn expects.
+
+![Horn](Horn_photo.png)
 
 ---
 
@@ -86,6 +93,8 @@ And then parse NMEA data from the serial line:
       }
 ```
 
+![Ultimate GPS](GPS_photo.png)
+
 ---
 
 ### OLED Display
@@ -97,6 +106,8 @@ The display is used to give the user information, and its three input buttons ar
 When the device is in sleep mode, the screen is off. Once awake, when the A button is pressed, the OLED displays lock/unlock status. The B button handles the fingerprint enrollment process, assuming the device is unlocked. The C button displays the GPS status, giving the current connected satellite number, coordinates, and movement from initial position. When the device goes to sleep, the screen will become blank again.
 
 We referenced the code provided by the device supplier to write our code for the display.⁴
+
+![OLED](OLED_photo.png)
 
 ---
 
