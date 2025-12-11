@@ -148,7 +148,7 @@ Here are the three main OLED screens, each activated with one of the three butto
 
 ![lock_status](images/lock_status.jpg)
 
-As opposed to simply displaying information, this screen is associated with prompting the fingerprint sensor to enroll another fingerprint, so long as the device is unlocked.
+If the middle button is pressed while the system is disarmed, the screen walks the user through enrolling a new fingerpint
 ![enroll_finger](images/enroll_finger.jpg)
 
 ![GPS_coordinates](images/GPS_coordinates.jpg)
