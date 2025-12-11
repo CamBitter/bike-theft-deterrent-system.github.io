@@ -98,6 +98,8 @@ void GpsTask(void *parameters)
             initialGPSData = lastGPSData;
             Serial.println("[GPS] Home Point Recorded!");
           }
+
+          publishGpsData(lastGPSData);
         }
         else
         {
