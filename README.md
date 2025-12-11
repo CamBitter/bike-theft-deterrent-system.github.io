@@ -28,7 +28,7 @@ We used the Huzzah32 ESP32 Feather by Adafruit due to its powerful dual core CPU
 
 We are using Adafruit's "Rugged Panel Mount Fingerprint Sensor with Bi-Color LED Ring - R503" as our fingerprint sensor. This is the main entry into the BTDS, as it is used to arm and disarm the alarm system. The sensor exchanges data with the MCU on the RX (16) and TX (17) pins, as well as a separate interrupt pin (27) for wakeup. With onboard memory, the sensor manages all fingerprint reading, verification, and storage internally.² The red, pink, and blue LED ring is configured to show when the system is woken via the sensor. It also indicates if a scan is read as a match, and, with the OLED, walks the user through enrolling a new fingerprint. 
 
-We are using "Adafruit Fingerprint Sensor Library" ("fingerprint.h") to communicate with the fingerprint sensor. It's relatively straightforward:
+We are using Adafruit Fingerprint Sensor Library (`"fingerprint.h"`) to communicate with the fingerprint sensor. It's relatively straightforward:
 ```
 Adafruit_Fingerprint finger = Adafruit_Fingerprint(&Serial1); // Serial 1 uses the default HardwareSerial at UART 1
 
@@ -89,9 +89,9 @@ And then parse NMEA data from the serial line:
 
 We decided on the Adafruit 128x64 OLED FeatherWing due to its ability to connect to the MCU easily, its simple input system, and modest graphical capabilities, being limited to black and white.
 
-The display is used to give the user information, and its three input buttons are used for the user to communicate to the system. It physically acts as a wing to the MCU, sitting directly on it. It communicates via SPI, and uses the adafruit SH110X graphics drivers. The adafruit GFX library provides commands to display text, and images.
+The display is used to give the user information, and its three input buttons are used for the user to communicate to the system. It physically acts as a wing to the MCU, sitting directly on it. It communicates via SPI, and uses the Adafruit SH110X graphics drivers (`Adafruit SH110X` library). The Adafruit GFX library provides commands to display text, and images.
 
-Typically, the monochrome screen is blank. When the A button is pressed, it displays the battery charge and lock/unlock status. The B button enrolls a fingerprint, assuming the device is unlocked. The C button displays the GPS status, giving the current connected satelite number and coordinates. When the device goes to sleep, the screen will become blank as it powers down.
+When the device is in sleep mode, the screen is off. Once awake, when the A button is pressed, the OLED displays lock/unlock status. The B button handles the fingerprint enrollment process, assuming the device is unlocked. The C button displays the GPS status, giving the current connected satellite number, coordinates, and movement from initial position. When the device goes to sleep, the screen will become blank again.
 
 We referenced the code provided by the device supplier to write our code for the display.⁴
 
