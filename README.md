@@ -37,13 +37,21 @@ void setup() {
 }
 ```
 
-Then you can access all sorts of functions such as `finger.LEDcontrol()`, `finger.getImage()`, `finger.search()` etc. to setup checking fingerprints. Examples can be found on the [Adafruit Website](https://learn.adafruit.com/adafruit-optical-fingerprint-sensor)
+Then you can access all sorts of functions such as `finger.LEDcontrol()`, `finger.getImage()`, `finger.search()` etc. to setup checking fingerprints. 
+
+More info can be found on the [Adafruit Fingerprint Sensor Overview](https://learn.adafruit.com/adafruit-optical-fingerprint-sensor)
 
 ---
 
 ### Accelerometer
 
 We are using Adafruit's LIS3DH acceleromter. It features high sensitiviy, 3-axis detection, and low-power modes. It is configured to supply an interrupt signal when a certain threshold of motion is met.³ Our acceleromter is primarly used to wake up our system. When the accelerometer surpases its motion detection threshold, it will trigger the ESP32 wakeup process. Once the interrupt is triggered, the accelerometer moves into a higher-power mode, where it reads for acceleration more frequently. New acceleration events will be stored. Before the ESP32 goes back to sleep, it will check if there has been a recent acceleration (last ~5 seconds). If there has been, then we can assume that the bike has been in motion for at least 25 seconds, and this will trigger the alarm.
+
+While Adafruit makes a library for this sensor, it does not contain the interrupt configurability that we needed. So, we ended up having to create use `writeRegister` and `readRegister` to perform the accelerometer configuration via [its datasheet](https://cdn-learn.adafruit.com/assets/assets/000/085/846/original/lis3dh.pdf?1576396666)
+
+We're not actually ever reading from the accelerometer, rather it's just sending interrupt signals whenever it detects enough movement. So our accelerometer code is just configuring an interrupt threshold, range, duration, etc. We also have a function that will clear the acceleromter interrupt, allowing more to be sent.
+
+More info can be found on the [Adafruit LIS3DH Overview](https://learn.adafruit.com/adafruit-lis3dh-triple-axis-accelerometer-breakout)
 
 ---
 
