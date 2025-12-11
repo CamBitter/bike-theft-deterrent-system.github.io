@@ -6,11 +6,11 @@ A proof-of-concept embedded system designed to deter bike theft, authenticate ow
 
 # Introduction
 
-Our goal was to create a system for securing a bike that took less time to use than a traditional U or cable lock. Bike theft is a serious problem on Middlebury campus, with it happening to people we know often. This is a problem at Universities across America as well.¹ At the same time, traditional locks are a hassle to use when moving around campus as much as the average student, and many students tend to not lock their bikes, making the issue worse.¹ Out goal was to make a bike theft deterent system that would require little work to operate and strongly discourage bike theft. 
+Our goal was to create a system for securing a bike that took less time to use than a traditional U or cable lock. Bike theft is a serious problem on Middlebury campus, with it happening to people we know often. This is a problem at Universities across America as well.¹ At the same time, traditional locks are a hassle to use when moving around campus as much as the average student, and many students tend to not lock their bikes, exacerbating the issue.¹ Our goal was to make a bike theft deterent system that would require little work to operate and strongly discourage bike theft. 
 
-In order to lock and unlock the bike, we determined that a fingerprint scanner would be ideal for a quick and easy lock and unlock without having to manage a physical aspect. An accelerometer would detect when the bike was stolen, by measuring when the bike was moving while locked. Once the system determined a theft attempt was underway, it would activate a loud alarm, similar in volume to a car horn, and track the bike's location via an onboard GPS. An MQTT server would receive information from the device and display it to the owner. An OLED display would inform the user as to the lock status, battery, and provide information on the fingerprint registration system.
+In order to lock and unlock the bike, we determined that a fingerprint sensor would be ideal for a quick and easy lock and unlock process. We use an accelerometer and GPS combination to detect when the bike is being stolen. Once the system determines a theft attempt is underway, it  begins blaring a loud horn (135db+) and tracks the bike's location via an onboard GPS. The GPS data is sent to an MQTT Server (Adafruit IO Dashboard, in our case) for the bike owner to device on their personal devices. An OLED display is used to display the lock status, battery, gps information, and handle the finger enrollment process (adding new authorized fingerprints). 
 
-Originally, we were interested in a physical lock mechanism as well, but we realized that it would be easier and just as effective to use a horn. What is especially nice about this approach is that a bike may be secured regardless of where it is, without having to rely on a bike rack.
+Originally, we were interested in a physical lock mechanism as well, but we realized that it would be much easier and just as effective to use a horn. What is especially nice about this approach is that a bike may be secured regardless of where it is, without having to rely on a bike rack.
 
 ---
 
@@ -18,7 +18,7 @@ Originally, we were interested in a physical lock mechanism as well, but we real
 
 ## MCU
 
-We used the Huzzah32 ESP32 Feather by Adafruit due to its WiFi and deep sleep capabilities, and because it we already had on hand. We used PlatformIO to build the structure of our project. We use I2C, SPI, and UART protocols to communicate with our array of sensors and peripherals. The ESP32 uses a MOSFET to control a horn wired to a 12V power source. We also make effective use of the ESP32's dual core. Our sensor loops are handled as FreeRTOS tasks which allow us to spread out CPU load and ensure our code is non-blocking. 
+We used the Huzzah32 ESP32 Feather by Adafruit due to its powerful dual core CPU, WiFi, and deep sleep capabilities. We also already had on hand, and didn't have any need to use a different board. We used PlatformIO to build the structure of our project. We use I2C, SPI, and UART protocols to communicate with our acceleromter, OLED, fingerprint sensor, and GPS module. The ESP32 handles all the tasks for these peripherals. The ESP32 also handles a MOSFET connected to a horn wired to a 12V power source. This allows the ESP32 to "power" the horn with 12V and many amps, while remaining safe and secure on its 5V line. We also make effective use of the ESP32's dual core. Our sensor loops are handled as FreeRTOS tasks which allow us to spread out CPU load and ensure our code is non-blocking. 
 
 ---
 
@@ -26,25 +26,43 @@ We used the Huzzah32 ESP32 Feather by Adafruit due to its WiFi and deep sleep ca
 
 ### Fingerprint Scanner
 
-We are using Adafruit's "Rugged Panel Mount Fingerprint Sensor with Bi-Color LED Ring - R503" as our fingerprint sensor. The sensor exchanges data with the MCU on the RX and TX pins, as well as a separate interrupt pin for wakeup. With onboard memory, the sensor manages all fingerprint reading, verification, and storage internally.² The red, pink, and blue LED ring is configured to show when the system is woken via the sensor. It also indicates if a scan is read as a match, and, with the OLED, walks the user through enrolling a new fingerprint. 
+We are using Adafruit's "Rugged Panel Mount Fingerprint Sensor with Bi-Color LED Ring - R503" as our fingerprint sensor. This is the main entry into the BTDS, as it is used to arm and disarm the alarm system. The sensor exchanges data with the MCU on the RX (16) and TX (17) pins, as well as a separate interrupt pin (27) for wakeup. With onboard memory, the sensor manages all fingerprint reading, verification, and storage internally.² The red, pink, and blue LED ring is configured to show when the system is woken via the sensor. It also indicates if a scan is read as a match, and, with the OLED, walks the user through enrolling a new fingerprint. 
 
 ---
 
 ### Accelerometer
 
-We are using Adafruit's LIS3DH acceleromter. It features high sensitiviy, 3-axis detection, and low-power modes. It also can be configured to supply an interrupt when a certain threshold of motion is setup.³ Our acceleromter is primarly used to wake up our system. When the acceleromter detects a threshold of motion, it will trigger the ESP32 wakeup process. Once the interrupt is triggered, the acceleromter moves into a higher-power mode, where it reads for acceleration more frequently. New acceleration events will reset the ESP32 sleep timer. It is wired using I2C.
+We are using Adafruit's LIS3DH acceleromter. It features high sensitiviy, 3-axis detection, and low-power modes. It is configured to supply an interrupt signal when a certain threshold of motion is met.³ Our acceleromter is primarly used to wake up our system. When the accelerometer surpases its motion detection threshold, it will trigger the ESP32 wakeup process. Once the interrupt is triggered, the accelerometer moves into a higher-power mode, where it reads for acceleration more frequently. New acceleration events will be stored. Before the ESP32 goes back to sleep, it will check if there has been a recent acceleration (last ~5 seconds). If there has been, then we can assume that the bike has been in motion for at least 25 seconds, and this will trigger the alarm.
 
 ---
 
 ### Horn
 
-The horn is intended to by supplied with a 12v power supply, as opposed to the 5v that the MCU expects. For this reason, we purchased a regulator and MOSFET, and purchased a 12v battery. The voltage is regulated down to 5v for the MCU, and the MCU controls the horn indirectly, via the MOSFET. The MOSFET allows the MCU to allow or disallow current to the horn without directly supplying the current at the level the horn expects.
+The horn is supplied with a 12v power supply and requires many more amps than is supported by the ESP32 and peripherals. For this reason, we purchased a 12V battery, voltage regulator, and MOSFET. The voltage is regulated down to a safe 5V for the ESP32, and the ESP32 controls the horn indirectly via the MOSFET. The MOSFET allows the MCU to allow or disallow current to the horn directly from the battery without directly supplying the current at the level the horn expects.
 
 ---
 
 ### GPS
 
-The GPS is connected via its RX pin to the MCU, which makes up half of an SPI connection. In the issues section this will be explained. As it stands, the GPS provides data in the form of coordinates. When the MCU wakes up, its begins reading from the GPS sensor, which sends it data in the National Marine Electronics Association (NMEA) data format. This is then parsed using an Adafruit library, and stored at the initial wakeup of the ESP32. Before the ESP32 timer expires, it checks the GPS data again and determines if the system has been moved more than a threshold distance (in our case, 15ft). If this threshold is exceeded, then the ESP32 moves into the alarm state.
+The GPS is connected via its TX (21) pin to the ESP32, which makes up half of an SPI connection. In the issues section this will be explained. As it stands, the GPS provides data in the National Marine Electronics Association (NMEA) data format. When the ESP32 wakes up, its begins reading from the GPS sensor. This is then parsed using an Adafruit library and stored at the initial wakeup of the ESP32 once at least 6 satellites have been found. Before the ESP32 goes to sleep, it compares the latest GPS reading to the initial reading and calculates the distance between those coordinates. If it detects that the system has been moved more than a threshold distance (in our case 10 meters). If this threshold is exceeded, then the ESP32 moves into the alarm state. 
+
+We are using the <Adafruit_GPS.h> library for the GPS. It allows us to setup a serial connection:
+
+```
+HardwareSerial GPS_Serial(GPS_UART);
+Adafruit_GPS GPS(&GPS_Serial);
+```
+
+And then parse NMEA data from the serial line:
+```
+ while (GPS_Serial.available())
+    {
+      char c = GPS.read();
+
+      if (GPS.newNMEAreceived()) {
+        // can access GPS object here
+      }
+```
 
 ---
 
