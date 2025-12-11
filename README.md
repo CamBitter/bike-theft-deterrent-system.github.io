@@ -12,6 +12,8 @@ In order to lock and unlock the bike, we determined that a fingerprint sensor wo
 
 Originally, we were interested in a physical lock mechanism as well, but we realized that it would be much easier and just as effective to use a horn. What is especially nice about this approach is that a bike may be secured regardless of where it is, without having to rely on a bike rack.
 
+We also decided that this project would perfectly fit the course objectives and motivations for learning embedded systems. We expanded our knowledge of integration of many different peripherals, using UART, SPI, and I2C protocols. We learned new ways of handling parallel code with FreeRTOS, and how to deal with the constraints of processing power. We were able to identify a real world issue and devlop a solution prototype (as gimmicky as it is in reality). Overall, we were able to apply our skills learned throughout the semester into a device that is properly interactable and functional in the real world.
+
 ---
 
 # Methods
