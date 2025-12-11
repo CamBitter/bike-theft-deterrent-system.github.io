@@ -87,14 +87,17 @@ Areas of success: Code works well, most periphreals function as intended.
 
 Areas of failure: the horn doesn't currently work, and in addition to the form factor currently being unappealing, we have a functional proof of concept, but not a full device.
 
-Here are the three main OLED screens, each activated with one of the three buttons when the device is unlocked
+Here are the three main OLED screens, each activated with one of the three buttons when the device is awake
 
 ![lock_status](lock_status.jpg)
 
-as opposed to simply displaying information, this screen is associated with prompting the fingerprint scanner to enroll another fingerprint
+As opposed to simply displaying information, this screen is associated with prompting the fingerprint scanner to enroll another fingerprint, so long as the device is unlocked.
 ![enroll_finger](enroll_finger.jpg)
 
 ![GPS_coordinates](GPS_coordinates.jpg)
+
+The device recognizing a test theft event
+
 
 ---
 
