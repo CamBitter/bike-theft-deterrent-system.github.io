@@ -13,7 +13,8 @@ int currentScreen = LOCK_SCREEN;
 screens_t screens = {
     "LOCK:\nDISARMED",
     "Enroll\nFinger",
-    "GPS:\n"};
+    "GPS:\n",
+    "ALARM\nACTIVATED\nPUB SAFE\nINBOUND"};
 
 void resetDisplay()
 {
@@ -38,21 +39,24 @@ void oledTask(void *parameters)
         if (!digitalRead(BUTTON_A))
         {
             currentScreen = LOCK_SCREEN;
+            resetSleep();
         }
         else if (!digitalRead(BUTTON_B))
         {
             currentScreen = ENROLL_SCREEN;
+            resetSleep();
         }
         else if (!digitalRead(BUTTON_C))
         {
             currentScreen = GPS_SCREEN;
+            resetSleep();
         }
 
         switch (currentScreen)
         {
         case LOCK_SCREEN:
-            snprintf(buffer, sizeof(buffer), "Lock:\n%s", isArmed ? "ARMED" : "DISARMED");
-            dannyWrite(buffer);
+            screens.lock_status = isArmed ? "Lock:\nARMED" : "Lock:\nDISARMED";
+            dannyWrite(screens.lock_status);
             break;
 
         case ENROLL_SCREEN:
@@ -63,11 +67,15 @@ void oledTask(void *parameters)
             dannyWrite(screens.gps_status);
             break;
 
+        case ALARM_SCREEN:
+            dannyWrite(screens.alarm_status);
+            break;
+
         default:
             dannyWrite("hmm..");
             break;
         }
-        vTaskDelay(pdMS_TO_TICKS(500));
+        vTaskDelay(pdMS_TO_TICKS(20));
     }
 }
 

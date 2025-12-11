@@ -211,6 +211,15 @@ void toggleLock()
     finger.LEDcontrol(FINGERPRINT_LED_FLASHING, 25, FINGERPRINT_LED_BLUE, 3);
     currentScreen = LOCK_SCREEN;
 
+    if (isArmed)
+    {
+        screens.enroll_status = "Unlock\nTo Enroll";
+    }
+    else
+    {
+        screens.enroll_status = "Enroll\nFinger";
+    }
+
     delay(1000);
 }
 
@@ -276,7 +285,7 @@ void fingerTask(void *pvParameters)
 
             currentlyHandlingFinger = true;
             Serial.println("[Finger] Interrupt reset.");
-            wakeStart = millis();
+            resetSleep();
 
             if (!isArmed && currentScreen == ENROLL_SCREEN)
             {
@@ -370,8 +379,6 @@ void initFingerprint()
     Serial.println(".");
 
     // printAllSlots();
-
-    finger.LEDcontrol(FINGERPRINT_LED_OFF, 0, FINGERPRINT_LED_PURPLE);
 
     delay(500);
 

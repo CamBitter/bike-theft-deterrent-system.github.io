@@ -18,8 +18,15 @@
 #include "oled.h"
 
 // RTC_DATA persists through Deep Sleep
-RTC_DATA_ATTR unsigned long wakeStart = 0;
+RTC_DATA_ATTR unsigned long wakeStart;
+unsigned long time_of_last_motion;
 RTC_DATA_ATTR bool isArmed = false;
+RTC_DATA_ATTR bool isAlarming = false;
+
+void resetSleep()
+{
+  wakeStart = millis();
+}
 
 /*
  * WAKE INITIAL
@@ -28,8 +35,6 @@ void setup()
 {
 
   Serial.begin(115200);
-
-  delay(2000);
 
   /* INIT ACCELEROMETER */
   if (!lis.begin(LIS3DH_ADDR))
@@ -72,6 +77,7 @@ void setup()
     if (status & (1ULL << ACCELEROMETER_INTERRUPT_PIN))
     {
       Serial.println("[Wakeup]: EXT1 (Accelerometer)");
+      time_of_last_motion = millis();
       clearAccelerometerInterrupt();
     }
     break;
@@ -104,16 +110,31 @@ void loop()
   // HANDLE ACCELEROMETER INTERRUPT
   if (digitalRead(ACCELEROMETER_INTERRUPT_PIN) == HIGH)
   {
-    Serial.println("[LIS3DH]: Interrupt reset.");
-    wakeStart = millis();
+    Serial.println("[LIS3DH]: Updated most recent interrupt.");
+    time_of_last_motion = millis();
     clearAccelerometerInterrupt();
   }
 
-  // IF NO ACTIVITY, GO TO SLEEP
+  // PRE-SLEEP CHECKS
   if ((millis() - wakeStart) > AWAKE_TIME_MS && !currentlyHandlingFinger)
   {
+    bool gpsMovement = getGpsMovementDistance() > MOVEMENT_DISTANCE_THRESHOLD;
+    bool recentMotion = millis() - time_of_last_motion < CHECK_LAST_MOVEMENT_MS;
+
+    if (isArmed && (gpsMovement || recentMotion))
+    {
+      Serial.println("[Main]: ALARM TRIGGERED!");
+      isAlarming = true;
+      resetSleep();
+      currentScreen = ALARM_SCREEN;
+      return;
+    }
     Serial.println("[Main]: Starting deep sleep.");
     fingerLightSleep();
     oledShutdown();
+    esp_deep_sleep_start();
     delay(50);
   }
+
+  delay(50);
+}

@@ -21,5 +21,6 @@ extern GPS_Data initialGPSData;
 void initGPS();
 GPS_Data readGPS();
 void startGpsTask();
+double getGpsMovementDistance();
 
 #endif
