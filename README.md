@@ -24,7 +24,7 @@ We used the Huzzah32 ESP32 Feather by Adafruit due to its powerful dual core CPU
 
 ## Peripherals
 
-### Fingerprint Scanner
+### Fingerprint Sensor
 
 We are using Adafruit's "Rugged Panel Mount Fingerprint Sensor with Bi-Color LED Ring - R503" as our fingerprint sensor. This is the main entry into the BTDS, as it is used to arm and disarm the alarm system. The sensor exchanges data with the MCU on the RX (16) and TX (17) pins, as well as a separate interrupt pin (27) for wakeup. With onboard memory, the sensor manages all fingerprint reading, verification, and storage internally.² The red, pink, and blue LED ring is configured to show when the system is woken via the sensor. It also indicates if a scan is read as a match, and, with the OLED, walks the user through enrolling a new fingerprint. 
 
@@ -109,7 +109,7 @@ Here are the three main OLED screens, each activated with one of the three butto
 
 ![lock_status](lock_status.jpg)
 
-As opposed to simply displaying information, this screen is associated with prompting the fingerprint scanner to enroll another fingerprint, so long as the device is unlocked.
+As opposed to simply displaying information, this screen is associated with prompting the fingerprint sensor to enroll another fingerprint, so long as the device is unlocked.
 ![enroll_finger](enroll_finger.jpg)
 
 ![GPS_coordinates](GPS_coordinates.jpg)
