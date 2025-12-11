@@ -6,11 +6,11 @@ A proof-of-concept embedded system designed to deter bike theft, authenticate ow
 
 # Introduction
 
-Our goal was to create a system for securing a bike that took less time to use than a traditional U- or cable lock. Bike theft is a serious problem on Middlebury campus, with it happening to people we know or ourselves often. At the same time, traditional locks are a hassle to use when moving around campus as much as the average student, and many students tend to not lock their bikes, making the issue worse. Out goal was to make a bike theft deterent that would require little work to operate, and strongly discourage bike theft. We determined the best solution to this problem would utilize a microcontroller to manage an array of theft deterent and retreival methods.
+Our goal was to create a system for securing a bike that took less time to use than a traditional U- or cable lock. Bike theft is a serious problem on Middlebury campus, with it happening to people we know or ourselves often. This is a problem at Universities across America as well.¹ At the same time, traditional locks are a hassle to use when moving around campus as much as the average student, and many students tend to not lock their bikes, making the issue worse.¹ Out goal was to make a bike theft deterent that would require little work to operate, and strongly discourage bike theft. We determined the best solution to this problem would utilize a microcontroller to manage an array of theft deterent and retreival methods.
 
 In order to lock and unlock the bike, we determined that a fingerprint scanner would be ideal for a quick and easy lock and unlock without having to manage a physical aspect. An accellerometer would detect when the bike was stolen, by measuring when the bike was moving while locked. Once the system determined a theft attempt was underway, it would activate a loud alarm, similar in volume to a car horn, and track the bike's location via an onboard GPS. An MQTT server would receive information from the device and display it to the owner. An OLED display would inform the user as to the lock status, battery, and provide information on the fingerprint registration system.
 
-(put references here)
+Originally, we were interested in a physical lock mechanism as well, but we realized that it would be easier and just as effective to use a horn. What is especially nice about this approach is that a bike may be secured regardless of where it is, without having to rely on a bike rack.
 
 ---
 
@@ -26,13 +26,13 @@ We used the Huzzah32 ESP32 Feather by Adafruit due to its WiFi and deep sleep ca
 
 ### Fingerprint Scanner
 
-We are using Adafruit's "Rugged Panel Mount Fingerprint Sensor with Bi-Color LED Ring - R503" as our fingerprint sensor. The sensor exchanges data with the MCU on the RX and TX pins, as well as a separate interrupt pin for wakeup. With onboard memory, the sensor manages all fingerprint reading, verification, and storage internally. The red, pink, and blue LED ring is configured to show when the system is woken via the sensor. It also indicates if a scan is read as a match, and, with the OLED, walks the user through enrolling a new fingerprint. 
+We are using Adafruit's "Rugged Panel Mount Fingerprint Sensor with Bi-Color LED Ring - R503" as our fingerprint sensor. The sensor exchanges data with the MCU on the RX and TX pins, as well as a separate interrupt pin for wakeup. With onboard memory, the sensor manages all fingerprint reading, verification, and storage internally.² The red, pink, and blue LED ring is configured to show when the system is woken via the sensor. It also indicates if a scan is read as a match, and, with the OLED, walks the user through enrolling a new fingerprint. 
 
 ---
 
 ### Accelerometer
 
-We are using Adafruit's LIS3DH acceleromter. It features high sensitiviy, 3-axis detection, and low-power modes. It also can be configured to supply and interrupt when a certain threshold of motion is setup. Our acceleromter is primarly used to wake up our system. When the acceleromter detects a threshold of motion, it will trigger the ESP32 wakeup process. Once the interrupt is triggered, the acceleromter moves into a higher-power mode, where it reads for acceleration more frequently. New acceleration events will reset the ESP32 sleep timer. It is wired using I2C.
+We are using Adafruit's LIS3DH acceleromter. It features high sensitiviy, 3-axis detection, and low-power modes. It also can be configured to supply an interrupt when a certain threshold of motion is setup.³ Our acceleromter is primarly used to wake up our system. When the acceleromter detects a threshold of motion, it will trigger the ESP32 wakeup process. Once the interrupt is triggered, the acceleromter moves into a higher-power mode, where it reads for acceleration more frequently. New acceleration events will reset the ESP32 sleep timer. It is wired using I2C.
 
 ---
 
@@ -56,7 +56,7 @@ The display is used to give the user information, and its three input buttons ar
 
 Typically, the monochrome screen is blank. When the A button is pressed, it displays the battery charge and lock/unlock status. The B button enrolls a fingerprint, assuming the device is unlocked. The C button displays the GPS status, giving the current connected satelite number and coordinates. When the device goes to sleep, the screen will become blank as it powers down.
 
-We referenced the code provided by the device supplier to write our code for the display.¹
+We referenced the code provided by the device supplier to write our code for the display.⁴
 
 ---
 
@@ -82,6 +82,10 @@ We referenced the code provided by the device supplier to write our code for the
 ---
 
 # Results
+
+Areas of success: Code works well, most periphreals function as intended.
+
+Areas of failure: the horn doesn't currently work, and in addition to the form factor currently being unappealing, we have a functional proof of concept, but not a full device.
 
 
 
@@ -169,4 +173,11 @@ As it stands, the user will have to access the Adafruit IO dashboard via the web
 
 # References
 
-1. Adafruit (2020) 128x64 OLED FeatherWing [Example code]. https://learn.adafruit.com/adafruit-128x64-oled-featherwing/arduino-code
+1. Simmons, T. (2025, December 10). IUPD deploying “bait bikes” to fight back against campus bicycle thefts. WRTV Indianapolis. https://www.wrtv.com/news/local-news/in-your-community/monroe-county/iupd-deploying-bait-bikes-to-fight-back-against-campus-bicycle-thefts
+
+2. Hangzhou Grow Technology. (2019). R503 Fingerprint Module User Manual. https://cdn-shop.adafruit.com/product-files/4651/4651_R503%20fingerprint%20module%20user%20manual.pdf
+
+3. STMicroelectronics. (2011). AN3308 Application note. https://cdn-shop.adafruit.com/datasheets/LIS3DHappnote.pdf 
+
+4. Adafruit (2020) 128x64 OLED FeatherWing [Example code]. https://learn.adafruit.com/adafruit-128x64-oled-featherwing/arduino-code
+
