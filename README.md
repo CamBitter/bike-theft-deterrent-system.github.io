@@ -135,9 +135,9 @@ We referenced the code provided by the device supplier to write our code for the
 
 # Results
 
-Areas of success: Code works well, most periphreals function as intended.
+Areas of success: The code and logic flow is all working successfully, and almost all of are peripherals are effectively integrated into the system.
 
-Areas of failure: the horn doesn't currently work, and in addition to the form factor currently being unappealing, we have a functional proof of concept, but not a full device.
+Areas of failure: Currently, we are unable to get the horn to function. While it works when given stand-alone power, it cannot be toggled by the ES. Additionally, we had trouble powering the MCU from the pinouts/breadboard, so we are powering it separately from another battery pack, this one 5v. The form factor is not completely seamlessly integrated into a bike, but could be relatively easily connected via zipties.
 
 Here are the three main OLED screens, each activated with one of the three buttons when the device is awake
 
