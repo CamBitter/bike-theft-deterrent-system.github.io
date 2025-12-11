@@ -60,7 +60,7 @@ We referenced the code provided by the device supplier to write our code for the
 
 ---
 
-[Click here to view the PDF](images/wiringDiagram.pdf)
+[Wiring Diagram Here](images/wiringDiagram.pdf)
 
 ---
 
