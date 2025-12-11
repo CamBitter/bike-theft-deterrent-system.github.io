@@ -125,6 +125,7 @@ void loop()
     {
       Serial.println("[Main]: ALARM TRIGGERED!");
       isAlarming = true;
+      digitalWrite(ALARM_CONTROL_PIN, HIGH);
       resetSleep();
       currentScreen = ALARM_SCREEN;
       return;

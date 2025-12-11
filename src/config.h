@@ -24,6 +24,6 @@
 #define FINGERPRINT_TX 17
 
 // Alarm pin
-#define ALARM_CONTROL 12
+#define ALARM_CONTROL_PIN 12
 
 #endif
