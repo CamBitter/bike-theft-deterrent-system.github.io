@@ -151,9 +151,10 @@ Here are the three main OLED screens, each activated with one of the three butto
 If the middle button is pressed while the system is disarmed, the screen walks the user through enrolling a new fingerpint
 ![enroll_finger](images/enroll_finger.jpg)
 
+If the bottom button is pressed,the device shows the current GPS coordinates, and how much motion has occured since wake-up
 ![GPS_coordinates](images/GPS_coordinates.jpg)
 
-The device recognizing a test theft event
+The device also shows a threatening message when a theft event is detected
 ![alarm_activated](images/alarm_activated.jpg)
 
 ---
