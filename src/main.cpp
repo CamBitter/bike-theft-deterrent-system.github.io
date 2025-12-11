@@ -47,7 +47,6 @@ void setup()
   init_ACC();
 
   /* INIT GPS */
-  initGPS();
   startGpsTask();
 
   /* INIT FINGERPRINT */
