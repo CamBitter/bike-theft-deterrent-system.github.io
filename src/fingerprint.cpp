@@ -206,19 +206,13 @@ void toggleLock()
 {
     Serial.println("[Finger]: Toggling lock.");
     isArmed = !isArmed;
+    isAlarming = false;
 
     Serial.println("[Finger]: Toggled.");
     finger.LEDcontrol(FINGERPRINT_LED_FLASHING, 25, FINGERPRINT_LED_BLUE, 3);
     currentScreen = LOCK_SCREEN;
 
-    if (isArmed)
-    {
-        screens.enroll_status = "Unlock\nTo Enroll";
-    }
-    else
-    {
-        screens.enroll_status = "Enroll\nFinger";
-    }
+    screens.enroll_status = isArmed ? "Unlock\nTo Enroll" : "Enroll\nFinger";
 
     delay(1000);
 }

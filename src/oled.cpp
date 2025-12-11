@@ -109,10 +109,12 @@ void initOled()
     pinMode(BUTTON_C, INPUT_PULLUP);
     pinMode(BATTERY, INPUT);
 
-    // text display tests
     display.setTextSize(2);
     display.setTextColor(SH110X_WHITE);
     display.setCursor(0, 0);
+
+    screens.lock_status = isArmed ? "Lock:\nARMED" : "Lock:\nDISARMED";
+    screens.enroll_status = isArmed ? "Unlock\nTo Enroll" : "Enroll\nFinger";
 
     dannyWrite("Bike lock \nonline.");
     startOledTask();
