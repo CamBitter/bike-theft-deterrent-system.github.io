@@ -116,6 +116,11 @@ We referenced the code provided by the device supplier to write our code for the
 
 ---
 
+## Code Structure Flowchart
+[Code Flowchart](flowchart.txt)
+
+---
+
 ## Bill of Materials
 
 | Item                | Supplier | Cost    | Store link |
