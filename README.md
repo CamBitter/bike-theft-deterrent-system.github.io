@@ -111,6 +111,7 @@ We referenced the code provided by the device supplier to write our code for the
 
 ---
 
+## Wiring Diagram
 ![Wiring Diagram Here](images/Wiring_diagram_photo.png)
 
 ---
