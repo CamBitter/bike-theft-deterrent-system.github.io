@@ -58,8 +58,6 @@ void setup()
   /* INIT OLED */
   initOled();
 
-  /* STORE INTIAL GPS READING */
-
   /* WAKEUP FROM INTERRUPT */
   esp_sleep_wakeup_cause_t wakeupCause = esp_sleep_get_wakeup_cause();
 

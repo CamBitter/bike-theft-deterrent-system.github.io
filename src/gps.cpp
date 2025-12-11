@@ -5,8 +5,7 @@
 #include "mqtt.h"
 #include "oled.h"
 
-// Define the Serial Object
-HardwareSerial GPS_Serial(GPS_UART); // Ensure GPS_UART is defined in config.h (e.g., 1 or 2)
+HardwareSerial GPS_Serial(GPS_UART);
 Adafruit_GPS GPS(&GPS_Serial);
 
 GPS_Data initialGPSData = {};
@@ -99,7 +98,6 @@ void GpsTask(void *parameters)
             lastPublish = millis();
           }
 
-          // Set Home Point if not set yet
           if (!initialGPSData.fix && lastGPSData.satellites > 6)
           {
             initialGPSData = lastGPSData;
