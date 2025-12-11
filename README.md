@@ -87,7 +87,14 @@ Areas of success: Code works well, most periphreals function as intended.
 
 Areas of failure: the horn doesn't currently work, and in addition to the form factor currently being unappealing, we have a functional proof of concept, but not a full device.
 
+Here are the three main OLED screens, each activated with one of the three buttons when the device is unlocked
 
+![lock_status](lock_status.jpg)
+
+as opposed to simply displaying information, this screen is associated with prompting the fingerprint scanner to enroll another fingerprint
+![enroll_finger](enroll_finger.jpg)
+
+![GPS_coordinates](GPS_coordinates.jpg)
 
 ---
 
@@ -152,6 +159,8 @@ We worked mostly asynchroniously on different tasks, but this was the general or
 # Issues
 
 The first major issue we encountered was that the GPS module didn't directly have a TX and RX line, which make up an SPI connection interface. The model GPS we bought was intended to connect to a computer or rasberry pi via a USB-C port, and formatted its pin outputs in terms of the USB-C transmission protocol. We realized we had purchased the wrong model GPS, but we figured out that we could directly solder wires to the physical  GPS module, bypassing the conversion unit. Although the RX pin was soldered just fine, the delicate nature of the task resulted in the TX pin being ripped off of the module. This means that we can receive data from the GPS, which outputs constantly, but we can't send input to it. Ultimately, this doesn't affect the function of the product greatly.
+
+![GPS](GPS.jpg)
 
 When we integrated the code for the peripherals into the main code, it would output "invalid header" and get stuck in a boot loop. The same code functioned in Arduino IDE, so we had to do a lot of work to figure out why PlatformIO was struggling. The problem was with library versions, as in PlatformIO, we had the wrong library version. Arduino had the newest versions, so we had to manually update the libraries in PlatformIO.
 
