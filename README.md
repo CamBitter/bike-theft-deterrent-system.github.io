@@ -22,7 +22,7 @@ We also decided that this project would perfectly fit the course objectives and 
 
 We used the Huzzah32 ESP32 Feather by Adafruit due to its powerful dual core CPU, WiFi, and deep sleep capabilities. We also already had on hand, and didn't have any need to use a different board. We used PlatformIO to build the structure of our project. We use I2C, SPI, and UART protocols to communicate with our acceleromter, OLED, fingerprint sensor, and GPS module. The ESP32 handles all the tasks for these peripherals. The ESP32 also handles a MOSFET connected to a horn wired to a 12V power source. This allows the ESP32 to "power" the horn with 12V and many amps, while remaining safe and secure on its 5V line. We also make effective use of the ESP32's dual core. Our sensor loops are handled as FreeRTOS tasks which allow us to spread out CPU load and ensure our code is non-blocking. 
 
-![ESP32 Feather](ESP32_photo.png)
+![ESP32 Feather](images/ESP32_photo.png)
 
 ---
 
