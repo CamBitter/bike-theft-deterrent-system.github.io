@@ -107,7 +107,7 @@ void GpsTask(void *parameters)
         else
         {
           char buffer[64];
-          snprintf(buffer, sizeof(buffer), "GPS: Searching\nSats: %d", lastGPSData.satellites);
+          snprintf(buffer, sizeof(buffer), "GPS:\nSearching\nSats: %d", lastGPSData.satellites);
           screens.gps_status = buffer;
         }
       }
