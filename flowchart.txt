@@ -16,21 +16,20 @@
 │  Immediately on wake:                                             │
 │    - Turn on and init OLED                                        │
 │    - Determine wake source (ACC or Fingerprint)                   │
-│    - Begin 30-second awake timer                                  │
-│    - Obtain current GPS fix                                       │
-│    - Save baseline coordinates to RTC memory (baseLat/baseLon)    │
+│    - Begin 20-second awake timer                                  │
+│    - Obtain initial GPS fix                                       │
 │    - Read armed/disarmed status from RTC memory                   │
-│    - Start periodic GPS check timer (e.g., every 60s)             │
+│    - Start periodic GPS check timer                               │
 └──────────────────────────────────────────────────────────────–──––┘
                       |
                       v
 ┌──────────────────────────────────────────────────────────────––──┐
 │                 NORMAL AWAKE MONITORING MODE                     │
-│  System remains awake for 30 seconds unless extended:            │
+│  System remains awake for 20 seconds unless extended:            │
 │                                                                  │
 │  During this time:                                               │
 │    - Read accelerometer events                                   │
-│       → If new motion: reset 30-second timer                     │
+│       → Record last motion detected                              │
 │                                                                  │
 │    - Read fingerprint sensor activity                            │
 │       → If system DISARMED:                                      │
@@ -40,13 +39,12 @@
 │           • Only allow owner verification (no enrollment menu)   │
 │           • Reset timer if interacting                           │
 │                                                                  │
-│    - Periodic GPS Movement Check (e.g., every 60 seconds):       │
+│    - GPS Movement Check Before Sleep                             │
 │         • Obtain new GPS coordinates                             │
 │         • Compute distance from baseline                         │
 │         • If distance > movementThreshold AND system ARMED       │
-│             → Transition to THEFT MODE                           │
+│             → Sound the Alarm                                    │
 │                                                                  │
-│    - Send “awake but normal” status to Adafruit IO if desired    │
 │                                                                  │
 │  If timer expires with no activity and no movement:              │
 │       → Transition to GOING TO SLEEP                             │
@@ -55,18 +53,18 @@
                       | (Movement detected > threshold AND ARMED)
                       v
 ┌──────────────────────────────────────────────────────────────––––──┐
-│                          THEFT MODE                                │
+│                          ALARM MODE                                │
 │  Triggered when GPS confirms actual movement and system ARMED.     │
 │                                                                    │
 │  Actions:                                                          │
-│    - theftModeActive = true (RTC)                                  │
+│    - isAlarming = true                                             │
 │    - Send “THEFT ALERT” to Adafruit IO                             │
 │    - Start fast GPS reporting (every 2s)                           │
 │    - Flash OLED warning screen                                     │
 │    - Trigger audible alarm                                         │
 │                                                                    │
 │  Behavior:                                                         │
-│    - Device stays awake indefinitely                               │
+│    - Device stays awake for 20s                                    │
 │    - Continues GPS updates until system is reset or owner verifies │
 │                                                                    │
 │    - If fingerprint owner verifies identity:                       │
@@ -75,14 +73,14 @@
 └──────────────────────────────────────────────────────────────––──––┘
 
                       |
-                      | (30s timeout, no motion, no activity)
+                      | (20s timeout, no motion, no activity)
                       v
 ┌──────────────────────────────────────────────────────────────––──┐
 │                         GOING TO SLEEP                           │
 │  Actions prior to deep sleep:                                    │
 │    - Put OLED into sleep mode or power it down                   │
 │    - Clear accelerometer interrupt latch                         │
-│    - Ensure fingerprint sensor is idle (optionally sleep it)     │
+│    - Ensure fingerprint sensor is idle                           │
 │    - Save RTC variables (awakeStart, timestamps, armed status)   │
 │    - Reconfigure EXT0/EXT1 wakeup pins                           │
 │                                                                  │
