@@ -45,7 +45,7 @@ Then you can access all sorts of functions such as `finger.LEDcontrol()`, `finge
 
 More info can be found on the [Adafruit Fingerprint Sensor Overview](https://learn.adafruit.com/adafruit-optical-fingerprint-sensor)
 
-![Fingerprint Sensor](Fingerprint_Sensor_photo.png)
+![Fingerprint Sensor](images/Fingerprint_Sensor_photo.png)
 
 ---
 
@@ -59,7 +59,7 @@ We're not actually ever reading from the accelerometer, rather it's just sending
 
 More info can be found on the [Adafruit LIS3DH Overview](https://learn.adafruit.com/adafruit-lis3dh-triple-axis-accelerometer-breakout)
 
-![Accelerometer](LIS3DH_photo.png)
+![Accelerometer](images/LIS3DH_photo.png)
 
 ---
 
@@ -67,7 +67,7 @@ More info can be found on the [Adafruit LIS3DH Overview](https://learn.adafruit.
 
 The horn is supplied with a 12v power supply and requires many more amps than is supported by the ESP32 and peripherals. For this reason, we purchased a 12V battery, voltage regulator, and MOSFET. The voltage is regulated down to a safe 5V for the ESP32, and the ESP32 controls the horn indirectly via the MOSFET. The MOSFET allows the MCU to allow or disallow current to the horn directly from the battery without directly supplying the current at the level the horn expects.
 
-![Horn](Horn_photo.png)
+![Horn](images/Horn_photo.png)
 
 ---
 
@@ -93,7 +93,7 @@ And then parse NMEA data from the serial line:
       }
 ```
 
-![Ultimate GPS](GPS_photo.png)
+![Ultimate GPS](images/GPS_photo.png)
 
 ---
 
@@ -107,7 +107,7 @@ When the device is in sleep mode, the screen is off. Once awake, when the A butt
 
 We referenced the code provided by the device supplier to write our code for the display.⁴
 
-![OLED](OLED_photo.png)
+![OLED](images/OLED_photo.png)
 
 ---
 
@@ -140,15 +140,15 @@ Areas of failure: the horn doesn't currently work, and in addition to the form f
 
 Here are the three main OLED screens, each activated with one of the three buttons when the device is awake
 
-![lock_status](lock_status.jpg)
+![lock_status](images/lock_status.jpg)
 
 As opposed to simply displaying information, this screen is associated with prompting the fingerprint sensor to enroll another fingerprint, so long as the device is unlocked.
-![enroll_finger](enroll_finger.jpg)
+![enroll_finger](images/enroll_finger.jpg)
 
-![GPS_coordinates](GPS_coordinates.jpg)
+![GPS_coordinates](images/GPS_coordinates.jpg)
 
 The device recognizing a test theft event
-![alarm_activated](alarm_activated.jpg)
+![alarm_activated](images/alarm_activated.jpg)
 
 ---
 
@@ -214,7 +214,7 @@ We worked mostly asynchroniously on different tasks, but this was the general or
 
 The first major issue we encountered was that the GPS module didn't directly have a TX and RX line, which make up an SPI connection interface. The model GPS we bought was intended to connect to a computer or rasberry pi via a USB-C port, and formatted its pin outputs in terms of the USB-C transmission protocol. We realized we had purchased the wrong model GPS, but we figured out that we could directly solder wires to the physical  GPS module, bypassing the conversion unit. Although the RX pin was soldered just fine, the delicate nature of the task resulted in the TX pin being ripped off of the module. This means that we can receive data from the GPS, which outputs constantly, but we can't send input to it. Ultimately, this doesn't affect the function of the product greatly.
 
-![GPS](GPS.jpg)
+![GPS](images/GPS.jpg)
 
 When we integrated the code for the peripherals into the main code, it would output "invalid header" and get stuck in a boot loop. The same code functioned in Arduino IDE, so we had to do a lot of work to figure out why PlatformIO was struggling. The problem was with library versions, as in PlatformIO, we had the wrong library version. Arduino had the newest versions, so we had to manually update the libraries in PlatformIO.
 
