@@ -92,14 +92,19 @@ void GpsTask(void *parameters)
           snprintf(buffer, sizeof(buffer), "# Sats:%d\n%.6f\n%.6f\nMoved %.1fm", lastGPSData.satellites, lastGPSData.latitude, lastGPSData.longitude, getGpsMovementDistance());
           screens.gps_status = buffer;
 
+          static unsigned long lastPublish = 0;
+          if (isMqttConnected() && (millis() - lastPublish >= 5000))
+          {
+            publishGpsData(lastGPSData);
+            lastPublish = millis();
+          }
+
           // Set Home Point if not set yet
           if (!initialGPSData.fix && lastGPSData.satellites > 6)
           {
             initialGPSData = lastGPSData;
             Serial.println("[GPS] Home Point Recorded!");
           }
-
-          publishGpsData(lastGPSData);
         }
         else
         {
@@ -114,9 +119,6 @@ void GpsTask(void *parameters)
   }
 }
 
-// ---------------------------------------------------------
-// Start GPS task
-// ---------------------------------------------------------
 void startGpsTask()
 {
   Serial.println("[GPS] Started task.");
@@ -124,8 +126,8 @@ void startGpsTask()
   xTaskCreate(
       GpsTask,
       "Gps_Task",
-      4096, // Stack size
+      4096,
       NULL,
-      1, // Priority
+      1,
       NULL);
 }

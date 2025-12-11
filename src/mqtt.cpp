@@ -15,7 +15,7 @@
 
 const char *aio_url = "io.adafruit.com";
 const uint16_t aio_port = 1883;
-const char *gps_channel = "CamBitter/feeds/Bike-GPS";
+const char *gps_channel = "CamBitter/feeds/Bike-GPS/csv";
 
 WiFiClient client;
 Adafruit_MQTT_Client mqtt(&client, aio_url, aio_port, aio_username, aio_key);
